@@ -1,7 +1,7 @@
 #ifndef __MPU6050_H
 #define __MPU6050_H
 
-#include "common.h"  //°üº¬ËùÓĞµÄÇı¶¯ Í·ÎÄ¼ş
+#include "common.h"  //åŒ…å«æ‰€æœ‰çš„é©±åŠ¨ å¤´æ–‡ä»¶
 
 #define devAddr  0xD0
 
@@ -357,13 +357,13 @@
 
 extern float Acc1G_Values;
 
-//¹©Íâ²¿µ÷ÓÃµÄAPI
-void MPU6050_initialize(void); //³õÊ¼»¯
-uint8_t MPU6050_testConnection(void); //¼ì²âMPU6050ÊÇ·ñ´æÔÚ
-//¶ÁÈ¡ADCÖµ
+//ä¾›å¤–éƒ¨è°ƒç”¨çš„API
+void MPU6050_initialize(void); //åˆå§‹åŒ–
+uint8_t MPU6050_testConnection(void); //æ£€æµ‹MPU6050æ˜¯å¦å­˜åœ¨
+//è¯»å–ADCå€¼
 void MPU6050_getMotion6(int16_t* ax, int16_t* ay, int16_t* az, int16_t* gx, int16_t* gy, int16_t* gz);
 void MPU6050_getlastMotion6(int16_t* ax, int16_t* ay, 
 		int16_t* az, int16_t* gx, int16_t* gy, int16_t* gz);
-uint8_t MPU6050_getDeviceID(void); //¶ÁÈ¡MPU6050µÄID
-void MPU6050_InitGyro_Offset(void);//³õÊ¼»¯ÍÓÂİÒÇÆ«ÖÃ
+uint8_t MPU6050_getDeviceID(void); //è¯»å–MPU6050çš„ID
+void MPU6050_InitGyro_Offset(void);//åˆå§‹åŒ–é™€èºä»ªåç½®
 #endif

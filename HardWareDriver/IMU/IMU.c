@@ -1,31 +1,31 @@
 /* main.c file
-±àÐ´Õß£ºlisn3188
-ÍøÖ·£ºwww.chiplab7.com
-×÷ÕßE-mail£ºlisn3188@163.com
-±àÒë»·¾³£ºMDK-Lite  Version: 4.23
-³õ°æÊ±¼ä: 2012-04-25
-²âÊÔ£º ±¾³ÌÐòÒÑÔÚµÚÆßÊµÑéÊÒµÄmini IMUÉÏÍê³É²âÊÔ
-¹¦ÄÜ£º
-×ËÌ¬½âËã IMU
-½«´«¸ÐÆ÷µÄÊä³öÖµ½øÐÐ×ËÌ¬½âËã¡£µÃµ½Ä¿±êÔØÌåµÄ¸©Ñö½ÇºÍºá¹ö½Ç ºÍº½Ïò½Ç
+ç¼–å†™è€…ï¼šlisn3188
+ç½‘å€ï¼šwww.chiplab7.com
+ä½œè€…E-mailï¼šlisn3188@163.com
+ç¼–è¯‘çŽ¯å¢ƒï¼šMDK-Lite  Version: 4.23
+åˆç‰ˆæ—¶é—´: 2012-04-25
+æµ‹è¯•ï¼š æœ¬ç¨‹åºå·²åœ¨ç¬¬ä¸ƒå®žéªŒå®¤çš„mini IMUä¸Šå®Œæˆæµ‹è¯•
+åŠŸèƒ½ï¼š
+å§¿æ€è§£ç®— IMU
+å°†ä¼ æ„Ÿå™¨çš„è¾“å‡ºå€¼è¿›è¡Œå§¿æ€è§£ç®—ã€‚å¾—åˆ°ç›®æ ‡è½½ä½“çš„ä¿¯ä»°è§’å’Œæ¨ªæ»šè§’ å’Œèˆªå‘è§’
 ------------------------------------
  */
 
 #include "IMU.h"
 
-volatile float exInt, eyInt, ezInt;  // Îó²î»ý·Ö
-volatile float q0, q1, q2, q3; // È«¾ÖËÄÔªÊý
+volatile float exInt, eyInt, ezInt;  // è¯¯å·®ç§¯åˆ†
+volatile float q0, q1, q2, q3; // å…¨å±€å››å…ƒæ•°
 volatile float integralFBhand,handdiff;
-volatile uint32_t lastUpdate, now; // ²ÉÑùÖÜÆÚ¼ÆÊý µ¥Î» us
+volatile uint32_t lastUpdate, now; // é‡‡æ ·å‘¨æœŸè®¡æ•° å•ä½ us
 
 
 void MadgwickAHRSupdate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz);
 
-/**************************ÊµÏÖº¯Êý********************************************
-*º¯ÊýÔ­ÐÍ:		void Initial_Timer3(void)
-*¹¦¡¡¡¡ÄÜ:	  ³õÊ¼»¯Tim2  Tim3 ½«Á½¸ö¶¨Ê±Æ÷¼¶Áª£¬ÒÔ²úÉúÒ»¸ö32Î»µÄ¶¨Ê±Æ÷À´Ìá¹©ÏµÍ³us ¼¶µÄ¼ÆÊ±	
-ÊäÈë²ÎÊý£ºÎÞ
-Êä³ö²ÎÊý£ºÃ»ÓÐ	
+/**************************å®žçŽ°å‡½æ•°********************************************
+*å‡½æ•°åŽŸåž‹:		void Initial_Timer3(void)
+*åŠŸã€€ã€€èƒ½:	  åˆå§‹åŒ–Tim2  Tim3 å°†ä¸¤ä¸ªå®šæ—¶å™¨çº§è”ï¼Œä»¥äº§ç”Ÿä¸€ä¸ª32ä½çš„å®šæ—¶å™¨æ¥æä¾›ç³»ç»Ÿus çº§çš„è®¡æ—¶	
+è¾“å…¥å‚æ•°ï¼šæ— 
+è¾“å‡ºå‚æ•°ï¼šæ²¡æœ‰	
 *******************************************************************************/
 void Initial_Timer3(void)
 {
@@ -33,9 +33,9 @@ void Initial_Timer3(void)
 
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2 | RCC_APB1Periph_TIM3, ENABLE); 
 	/* TIM2 configuration*/ 
-  /* Time Base configuration »ù±¾ÅäÖÃ ÅäÖÃ¶¨Ê±Æ÷µÄÊ±»ùµ¥Ôª*/
+  /* Time Base configuration åŸºæœ¬é…ç½® é…ç½®å®šæ—¶å™¨çš„æ—¶åŸºå•å…ƒ*/
   TIM_TimeBaseStructInit(&TIM_TimeBaseStructure); 
-  TIM_TimeBaseStructure.TIM_Period = 0xffff; //×Ô¶¯ÖØ×°Öµ         
+  TIM_TimeBaseStructure.TIM_Period = 0xffff; //è‡ªåŠ¨é‡è£…å€¼         
   TIM_TimeBaseStructure.TIM_Prescaler = 0x0;       
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;    
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  
@@ -52,19 +52,19 @@ void Initial_Timer3(void)
   /* Enable the TIM2 Master Slave Mode */
   TIM_SelectMasterSlaveMode(TIM2, TIM_MasterSlaveMode_Enable);
   TIM_ARRPreloadConfig(TIM2, ENABLE);	
-	/* ¶¨Ê±Æ÷ÅäÖÃ:
-	1.ÉèÖÃ¶¨Ê±Æ÷×î´ó¼ÆÊýÖµ 50000
-	2.ÉèÖÃÊ±ÖÓ·ÖÆµÏµÊý£ºTIM_CKD_DIV1
-	3. ÉèÖÃÔ¤·ÖÆµ£º  1Mhz/50000= 1hz 
-	4.¶¨Ê±Æ÷¼ÆÊýÄ£Ê½  ÏòÉÏ¼ÆÊýÄ£Ê½
+	/* å®šæ—¶å™¨é…ç½®:
+	1.è®¾ç½®å®šæ—¶å™¨æœ€å¤§è®¡æ•°å€¼ 50000
+	2.è®¾ç½®æ—¶é’Ÿåˆ†é¢‘ç³»æ•°ï¼šTIM_CKD_DIV1
+	3. è®¾ç½®é¢„åˆ†é¢‘ï¼š  1Mhz/50000= 1hz 
+	4.å®šæ—¶å™¨è®¡æ•°æ¨¡å¼  å‘ä¸Šè®¡æ•°æ¨¡å¼
 	*/		 
   	TIM_TimeBaseStructure.TIM_Period = 0xffff;     
-  	TIM_TimeBaseStructure.TIM_Prescaler = 72;	 //1M µÄÊ±ÖÓ  
+  	TIM_TimeBaseStructure.TIM_Prescaler = 72;	 //1M çš„æ—¶é’Ÿ  
   	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;	
   	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  
-	//Ó¦ÓÃÅäÖÃµ½TIM3 
+	//åº”ç”¨é…ç½®åˆ°TIM3 
   	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
-	// Ê¹ÄÜTIM3ÖØÔØ¼Ä´æÆ÷ARR
+	// ä½¿èƒ½TIM3é‡è½½å¯„å­˜å™¨ARR
   	TIM_ARRPreloadConfig(TIM3, ENABLE);	
 
 	TIM_SelectSlaveMode(TIM3, TIM_SlaveMode_Reset);
@@ -75,17 +75,17 @@ void Initial_Timer3(void)
   	/* Enable the TIM3 Master Slave Mode */
   	TIM_SelectMasterSlaveMode(TIM3, TIM_MasterSlaveMode_Enable);
 
-  	//Æô¶¯¶¨Ê±Æ÷
+  	//å¯åŠ¨å®šæ—¶å™¨
 	TIM_Cmd(TIM3, ENABLE); 
   	TIM_Cmd(TIM2, ENABLE);                  
 }
 
 // Fast inverse square-root
-/**************************ÊµÏÖº¯Êý********************************************
-*º¯ÊýÔ­ÐÍ:	   float invSqrt(float x)
-*¹¦¡¡¡¡ÄÜ:	   ¿ìËÙ¼ÆËã 1/Sqrt(x) 	
-ÊäÈë²ÎÊý£º Òª¼ÆËãµÄÖµ
-Êä³ö²ÎÊý£º ½á¹û
+/**************************å®žçŽ°å‡½æ•°********************************************
+*å‡½æ•°åŽŸåž‹:	   float invSqrt(float x)
+*åŠŸã€€ã€€èƒ½:	   å¿«é€Ÿè®¡ç®— 1/Sqrt(x) 	
+è¾“å…¥å‚æ•°ï¼š è¦è®¡ç®—çš„å€¼
+è¾“å‡ºå‚æ•°ï¼š ç»“æžœ
 *******************************************************************************/
 float invSqrt(float x) {
 	float halfx = 0.5f * x;
@@ -97,30 +97,30 @@ float invSqrt(float x) {
 	return y;
 }
 
-/**************************ÊµÏÖº¯Êý********************************************
-*º¯ÊýÔ­ÐÍ:		uint32_t micros(void)
-*¹¦¡¡¡¡ÄÜ:	  ¶ÁÈ¡ÏµÍ³ÔËÐÐµÄÊ±¼ä £¬·µ»Øµ¥Î»Îªus µÄÊ±¼äÊý¡£	
-ÊäÈë²ÎÊý£ºÎÞ
-Êä³ö²ÎÊý£º´¦ÀíÆ÷µ±Ç°Ê±¼ä£¬´ÓÉÏµç¿ªÊ¼¼ÆÊ±  µ¥Î» us
+/**************************å®žçŽ°å‡½æ•°********************************************
+*å‡½æ•°åŽŸåž‹:		uint32_t micros(void)
+*åŠŸã€€ã€€èƒ½:	  è¯»å–ç³»ç»Ÿè¿è¡Œçš„æ—¶é—´ ï¼Œè¿”å›žå•ä½ä¸ºus çš„æ—¶é—´æ•°ã€‚	
+è¾“å…¥å‚æ•°ï¼šæ— 
+è¾“å‡ºå‚æ•°ï¼šå¤„ç†å™¨å½“å‰æ—¶é—´ï¼Œä»Žä¸Šç”µå¼€å§‹è®¡æ—¶  å•ä½ us
 *******************************************************************************/
 uint32_t micros(void)
 {
  	uint32_t temp=0 ;
- 	temp = TIM2->CNT; //¶Á¸ß16Î»Ê±¼ä
+ 	temp = TIM2->CNT; //è¯»é«˜16ä½æ—¶é—´
  	temp = temp<<16;
- 	temp += TIM3->CNT; //¶ÁµÍ16Î»Ê±¼ä
+ 	temp += TIM3->CNT; //è¯»ä½Ž16ä½æ—¶é—´
  	return temp;
 }
 
-/**************************ÊµÏÖº¯Êý********************************************
-*º¯ÊýÔ­ÐÍ:	   void IMU_init(void)
-*¹¦¡¡¡¡ÄÜ:	  ³õÊ¼»¯IMUÏà¹Ø	
-			  ³õÊ¼»¯¸÷¸ö´«¸ÐÆ÷
-			  ³õÊ¼»¯ËÄÔªÊý
-			  ½«»ý·ÖÇåÁã
-			  ¸üÐÂÏµÍ³Ê±¼ä
-ÊäÈë²ÎÊý£ºÎÞ
-Êä³ö²ÎÊý£ºÃ»ÓÐ
+/**************************å®žçŽ°å‡½æ•°********************************************
+*å‡½æ•°åŽŸåž‹:	   void IMU_init(void)
+*åŠŸã€€ã€€èƒ½:	  åˆå§‹åŒ–IMUç›¸å…³	
+			  åˆå§‹åŒ–å„ä¸ªä¼ æ„Ÿå™¨
+			  åˆå§‹åŒ–å››å…ƒæ•°
+			  å°†ç§¯åˆ†æ¸…é›¶
+			  æ›´æ–°ç³»ç»Ÿæ—¶é—´
+è¾“å…¥å‚æ•°ï¼šæ— 
+è¾“å‡ºå‚æ•°ï¼šæ²¡æœ‰
 *******************************************************************************/
 void IMU_init(void)
 {	 
@@ -133,46 +133,46 @@ void IMU_init(void)
 	BMP180_init();
 	Initial_Timer3();
 	// initialize quaternion
-  	q0 = 1.0f;  //³õÊ¼»¯ËÄÔªÊý
+  	q0 = 1.0f;  //åˆå§‹åŒ–å››å…ƒæ•°
   	q1 = 0.0f;
   	q2 = 0.0f;
   	q3 = 0.0f;
   	exInt = 0.0;
   	eyInt = 0.0;
   	ezInt = 0.0;
-  	lastUpdate = micros();//¸üÐÂÊ±¼ä
+  	lastUpdate = micros();//æ›´æ–°æ—¶é—´
   	now = micros();
 }
 
-/**************************ÊµÏÖº¯Êý********************************************
-*º¯ÊýÔ­ÐÍ:	   void IMU_getValues(float * values)
-*¹¦¡¡¡¡ÄÜ:	 ¶ÁÈ¡¼ÓËÙ¶È ÍÓÂÝÒÇ ´ÅÁ¦¼Æ µÄµ±Ç°Öµ  
-ÊäÈë²ÎÊý£º ½«½á¹û´æ·ÅµÄÊý×éÊ×µØÖ·
-Êä³ö²ÎÊý£ºÃ»ÓÐ
+/**************************å®žçŽ°å‡½æ•°********************************************
+*å‡½æ•°åŽŸåž‹:	   void IMU_getValues(float * values)
+*åŠŸã€€ã€€èƒ½:	 è¯»å–åŠ é€Ÿåº¦ é™€èžºä»ª ç£åŠ›è®¡ çš„å½“å‰å€¼  
+è¾“å…¥å‚æ•°ï¼š å°†ç»“æžœå­˜æ”¾çš„æ•°ç»„é¦–åœ°å€
+è¾“å‡ºå‚æ•°ï¼šæ²¡æœ‰
 *******************************************************************************/
 void IMU_getValues(float * values) {  
 	int16_t accgyroval[6];
 	int i;
-	//¶ÁÈ¡¼ÓËÙ¶ÈºÍÍÓÂÝÒÇµÄµ±Ç°ADC
+	//è¯»å–åŠ é€Ÿåº¦å’Œé™€èžºä»ªçš„å½“å‰ADC
     MPU6050_getMotion6(&accgyroval[0], &accgyroval[1], &accgyroval[2], &accgyroval[3], &accgyroval[4], &accgyroval[5]);
     for(i = 0; i<6; i++) {
       if(i < 3) {
         values[i] = (float) accgyroval[i];
       }
       else {
-        values[i] = ((float) accgyroval[i]) / 32.8f; //×ª³É¶ÈÃ¿Ãë
-		//ÕâÀïÒÑ¾­½«Á¿³Ì¸Ä³ÉÁË 1000¶ÈÃ¿Ãë  32.8 ¶ÔÓ¦ 1¶ÈÃ¿Ãë
+        values[i] = ((float) accgyroval[i]) / 32.8f; //è½¬æˆåº¦æ¯ç§’
+		//è¿™é‡Œå·²ç»å°†é‡ç¨‹æ”¹æˆäº† 1000åº¦æ¯ç§’  32.8 å¯¹åº” 1åº¦æ¯ç§’
       }
     }
-//    HMC58X3_mgetValues(&values[6]);	//¶ÁÈ¡´ÅÁ¦¼ÆµÄADCÖµ
+//    HMC58X3_mgetValues(&values[6]);	//è¯»å–ç£åŠ›è®¡çš„ADCå€¼
 }
 
 
-/**************************ÊµÏÖº¯Êý********************************************
-*º¯ÊýÔ­ÐÍ:	   void IMU_AHRSupdate
-*¹¦¡¡¡¡ÄÜ:	 ¸üÐÂAHRS ¸üÐÂËÄÔªÊý 
-ÊäÈë²ÎÊý£º µ±Ç°µÄ²âÁ¿Öµ¡£
-Êä³ö²ÎÊý£ºÃ»ÓÐ
+/**************************å®žçŽ°å‡½æ•°********************************************
+*å‡½æ•°åŽŸåž‹:	   void IMU_AHRSupdate
+*åŠŸã€€ã€€èƒ½:	 æ›´æ–°AHRS æ›´æ–°å››å…ƒæ•° 
+è¾“å…¥å‚æ•°ï¼š å½“å‰çš„æµ‹é‡å€¼ã€‚
+è¾“å‡ºå‚æ•°ï¼šæ²¡æœ‰
 *******************************************************************************/
 #define Kp 2.0f   // proportional gain governs rate of convergence to accelerometer/magnetometer
 #define Ki 0.01f   // integral gain governs rate of convergence of gyroscope biases
@@ -184,7 +184,7 @@ void IMU_AHRSupdate(float gx, float gy, float gz, float ax, float ay, float az, 
   float ex, ey, ez,halfT;
   float tempq0,tempq1,tempq2,tempq3;
 
-  // ÏÈ°ÑÕâÐ©ÓÃµÃµ½µÄÖµËãºÃ
+  // å…ˆæŠŠè¿™äº›ç”¨å¾—åˆ°çš„å€¼ç®—å¥½
   float q0q0 = q0*q0;
   float q0q1 = q0*q1;
   float q0q2 = q0*q2;
@@ -196,20 +196,20 @@ void IMU_AHRSupdate(float gx, float gy, float gz, float ax, float ay, float az, 
   float q2q3 = q2*q3;
   float q3q3 = q3*q3;          
   
-  now = micros();  //¶ÁÈ¡Ê±¼ä
-  if(now<lastUpdate){ //¶¨Ê±Æ÷Òç³ö¹ýÁË¡£
+  now = micros();  //è¯»å–æ—¶é—´
+  if(now<lastUpdate){ //å®šæ—¶å™¨æº¢å‡ºè¿‡äº†ã€‚
   halfT =  ((float)(now + (0xffff- lastUpdate)) / 2000000.0f);
   }
   else	{
   halfT =  ((float)(now - lastUpdate) / 2000000.0f);
   }
-  lastUpdate = now;	//¸üÐÂÊ±¼ä
+  lastUpdate = now;	//æ›´æ–°æ—¶é—´
 
   norm = invSqrt(ax*ax + ay*ay + az*az);       
   ax = ax * norm;
   ay = ay * norm;
   az = az * norm;
-  //°Ñ¼Ó¼ÆµÄÈýÎ¬ÏòÁ¿×ª³Éµ¥Î»ÏòÁ¿¡£
+  //æŠŠåŠ è®¡çš„ä¸‰ç»´å‘é‡è½¬æˆå•ä½å‘é‡ã€‚
 
 //  norm = invSqrt(mx*mx + my*my + mz*mz);          
 //  mx = mx * norm;
@@ -217,9 +217,9 @@ void IMU_AHRSupdate(float gx, float gy, float gz, float ax, float ay, float az, 
 //  mz = mz * norm;
 
   /*
-  ÕâÊÇ°ÑËÄÔªÊý»»Ëã³É¡¶·½ÏòÓàÏÒ¾ØÕó¡·ÖÐµÄµÚÈýÁÐµÄÈý¸öÔªËØ¡£
-¸ù¾ÝÓàÏÒ¾ØÕóºÍÅ·À­½ÇµÄ¶¨Òå£¬µØÀí×ø±êÏµµÄÖØÁ¦ÏòÁ¿£¬×ªµ½»úÌå×ø±êÏµ£¬ÕýºÃÊÇÕâÈý¸öÔªËØ¡£
-ËùÒÔÕâÀïµÄvx\y\z£¬ÆäÊµ¾ÍÊÇµ±Ç°µÄÅ·À­½Ç£¨¼´ËÄÔªÊý£©µÄ»úÌå×ø±ê²ÎÕÕÏµÉÏ£¬»»Ëã³öÀ´µÄÖØÁ¦µ¥Î»ÏòÁ¿¡£
+  è¿™æ˜¯æŠŠå››å…ƒæ•°æ¢ç®—æˆã€Šæ–¹å‘ä½™å¼¦çŸ©é˜µã€‹ä¸­çš„ç¬¬ä¸‰åˆ—çš„ä¸‰ä¸ªå…ƒç´ ã€‚
+æ ¹æ®ä½™å¼¦çŸ©é˜µå’Œæ¬§æ‹‰è§’çš„å®šä¹‰ï¼Œåœ°ç†åæ ‡ç³»çš„é‡åŠ›å‘é‡ï¼Œè½¬åˆ°æœºä½“åæ ‡ç³»ï¼Œæ­£å¥½æ˜¯è¿™ä¸‰ä¸ªå…ƒç´ ã€‚
+æ‰€ä»¥è¿™é‡Œçš„vx\y\zï¼Œå…¶å®žå°±æ˜¯å½“å‰çš„æ¬§æ‹‰è§’ï¼ˆå³å››å…ƒæ•°ï¼‰çš„æœºä½“åæ ‡å‚ç…§ç³»ä¸Šï¼Œæ¢ç®—å‡ºæ¥çš„é‡åŠ›å•ä½å‘é‡ã€‚
   */
   // compute reference direction of flux
 //  hx = 2*mx*(0.5f - q2q2 - q3q3) + 2*my*(q1q2 - q0q3) + 2*mz*(q1q3 + q0q2);
@@ -245,31 +245,31 @@ void IMU_AHRSupdate(float gx, float gy, float gz, float ax, float ay, float az, 
   ez = (ax*vy - ay*vx);
 
   /*
-  axyzÊÇ»úÌå×ø±ê²ÎÕÕÏµÉÏ£¬¼ÓËÙ¶È¼Æ²â³öÀ´µÄÖØÁ¦ÏòÁ¿£¬Ò²¾ÍÊÇÊµ¼Ê²â³öÀ´µÄÖØÁ¦ÏòÁ¿¡£
-axyzÊÇ²âÁ¿µÃµ½µÄÖØÁ¦ÏòÁ¿£¬vxyzÊÇÍÓÂÝ»ý·ÖºóµÄ×ËÌ¬À´ÍÆËã³öµÄÖØÁ¦ÏòÁ¿£¬ËüÃÇ¶¼ÊÇ»úÌå×ø±ê²ÎÕÕÏµÉÏµÄÖØÁ¦ÏòÁ¿¡£
-ÄÇËüÃÇÖ®¼äµÄÎó²îÏòÁ¿£¬¾ÍÊÇÍÓÂÝ»ý·ÖºóµÄ×ËÌ¬ºÍ¼Ó¼Æ²â³öÀ´µÄ×ËÌ¬Ö®¼äµÄÎó²î¡£
-ÏòÁ¿¼äµÄÎó²î£¬¿ÉÒÔÓÃÏòÁ¿²æ»ý£¨Ò²½ÐÏòÁ¿Íâ»ý¡¢²æ³Ë£©À´±íÊ¾£¬exyz¾ÍÊÇÁ½¸öÖØÁ¦ÏòÁ¿µÄ²æ»ý¡£
-Õâ¸ö²æ»ýÏòÁ¿ÈÔ¾ÉÊÇÎ»ÓÚ»úÌå×ø±êÏµÉÏµÄ£¬¶øÍÓÂÝ»ý·ÖÎó²îÒ²ÊÇÔÚ»úÌå×ø±êÏµ£¬¶øÇÒ²æ»ýµÄ´óÐ¡ÓëÍÓÂÝ»ý·ÖÎó²î³ÉÕý±È£¬ÕýºÃÄÃÀ´¾ÀÕýÍÓÂÝ¡££¨Äã¿ÉÒÔ×Ô¼ºÄÃ¶«Î÷ÏëÏóÒ»ÏÂ£©ÓÉÓÚÍÓÂÝÊÇ¶Ô»úÌåÖ±½Ó»ý·Ö£¬ËùÒÔ¶ÔÍÓÂÝµÄ¾ÀÕýÁ¿»áÖ±½ÓÌåÏÖÔÚ¶Ô»úÌå×ø±êÏµµÄ¾ÀÕý¡£
+  axyzæ˜¯æœºä½“åæ ‡å‚ç…§ç³»ä¸Šï¼ŒåŠ é€Ÿåº¦è®¡æµ‹å‡ºæ¥çš„é‡åŠ›å‘é‡ï¼Œä¹Ÿå°±æ˜¯å®žé™…æµ‹å‡ºæ¥çš„é‡åŠ›å‘é‡ã€‚
+axyzæ˜¯æµ‹é‡å¾—åˆ°çš„é‡åŠ›å‘é‡ï¼Œvxyzæ˜¯é™€èžºç§¯åˆ†åŽçš„å§¿æ€æ¥æŽ¨ç®—å‡ºçš„é‡åŠ›å‘é‡ï¼Œå®ƒä»¬éƒ½æ˜¯æœºä½“åæ ‡å‚ç…§ç³»ä¸Šçš„é‡åŠ›å‘é‡ã€‚
+é‚£å®ƒä»¬ä¹‹é—´çš„è¯¯å·®å‘é‡ï¼Œå°±æ˜¯é™€èžºç§¯åˆ†åŽçš„å§¿æ€å’ŒåŠ è®¡æµ‹å‡ºæ¥çš„å§¿æ€ä¹‹é—´çš„è¯¯å·®ã€‚
+å‘é‡é—´çš„è¯¯å·®ï¼Œå¯ä»¥ç”¨å‘é‡å‰ç§¯ï¼ˆä¹Ÿå«å‘é‡å¤–ç§¯ã€å‰ä¹˜ï¼‰æ¥è¡¨ç¤ºï¼Œexyzå°±æ˜¯ä¸¤ä¸ªé‡åŠ›å‘é‡çš„å‰ç§¯ã€‚
+è¿™ä¸ªå‰ç§¯å‘é‡ä»æ—§æ˜¯ä½äºŽæœºä½“åæ ‡ç³»ä¸Šçš„ï¼Œè€Œé™€èžºç§¯åˆ†è¯¯å·®ä¹Ÿæ˜¯åœ¨æœºä½“åæ ‡ç³»ï¼Œè€Œä¸”å‰ç§¯çš„å¤§å°ä¸Žé™€èžºç§¯åˆ†è¯¯å·®æˆæ­£æ¯”ï¼Œæ­£å¥½æ‹¿æ¥çº æ­£é™€èžºã€‚ï¼ˆä½ å¯ä»¥è‡ªå·±æ‹¿ä¸œè¥¿æƒ³è±¡ä¸€ä¸‹ï¼‰ç”±äºŽé™€èžºæ˜¯å¯¹æœºä½“ç›´æŽ¥ç§¯åˆ†ï¼Œæ‰€ä»¥å¯¹é™€èžºçš„çº æ­£é‡ä¼šç›´æŽ¥ä½“çŽ°åœ¨å¯¹æœºä½“åæ ‡ç³»çš„çº æ­£ã€‚
   */
 if(ex != 0.0f && ey != 0.0f && ez != 0.0f){
   exInt = exInt + ex * Ki * halfT;
   eyInt = eyInt + ey * Ki * halfT;	
   ezInt = ezInt + ez * Ki * halfT;
 
-  // ÓÃ²æ»ýÎó²îÀ´×öPIÐÞÕýÍÓÂÝÁãÆ«
+  // ç”¨å‰ç§¯è¯¯å·®æ¥åšPIä¿®æ­£é™€èžºé›¶å
   gx = gx + Kp*ex + exInt;
   gy = gy + Kp*ey + eyInt;
   gz = gz + Kp*ez + ezInt;
 
   }
 
-  // ËÄÔªÊýÎ¢·Ö·½³Ì
+  // å››å…ƒæ•°å¾®åˆ†æ–¹ç¨‹
   tempq0 = q0 + (-q1*gx - q2*gy - q3*gz)*halfT;
   tempq1 = q1 + (q0*gx + q2*gz - q3*gy)*halfT;
   tempq2 = q2 + (q0*gy - q1*gz + q3*gx)*halfT;
   tempq3 = q3 + (q0*gz + q1*gy - q2*gx)*halfT;  
   
-  // ËÄÔªÊý¹æ·¶»¯
+  // å››å…ƒæ•°è§„èŒƒåŒ–
   norm = invSqrt(tempq0*tempq0 + tempq1*tempq1 + tempq2*tempq2 + tempq3*tempq3);
   q0 = tempq0 * norm;
   q1 = tempq1 * norm;
@@ -277,43 +277,43 @@ if(ex != 0.0f && ey != 0.0f && ez != 0.0f){
   q3 = tempq3 * norm;
 }
 
-/**************************ÊµÏÖº¯Êý********************************************
-*º¯ÊýÔ­ÐÍ:	   void IMU_getQ(float * q)
-*¹¦¡¡¡¡ÄÜ:	 ¸üÐÂËÄÔªÊý ·µ»Øµ±Ç°µÄËÄÔªÊý×éÖµ
-ÊäÈë²ÎÊý£º ½«Òª´æ·ÅËÄÔªÊýµÄÊý×éÊ×µØÖ·
-Êä³ö²ÎÊý£ºÃ»ÓÐ
+/**************************å®žçŽ°å‡½æ•°********************************************
+*å‡½æ•°åŽŸåž‹:	   void IMU_getQ(float * q)
+*åŠŸã€€ã€€èƒ½:	 æ›´æ–°å››å…ƒæ•° è¿”å›žå½“å‰çš„å››å…ƒæ•°ç»„å€¼
+è¾“å…¥å‚æ•°ï¼š å°†è¦å­˜æ”¾å››å…ƒæ•°çš„æ•°ç»„é¦–åœ°å€
+è¾“å‡ºå‚æ•°ï¼šæ²¡æœ‰
 *******************************************************************************/
-float mygetqval[9];	//ÓÃÓÚ´æ·Å´«¸ÐÆ÷×ª»»½á¹ûµÄÊý×é
+float mygetqval[9];	//ç”¨äºŽå­˜æ”¾ä¼ æ„Ÿå™¨è½¬æ¢ç»“æžœçš„æ•°ç»„
 void IMU_getQ(float * q) {
 
   IMU_getValues(mygetqval);	 
-  //½«ÍÓÂÝÒÇµÄ²âÁ¿Öµ×ª³É»¡¶ÈÃ¿Ãë
-  //¼ÓËÙ¶ÈºÍ´ÅÁ¦¼Æ±£³Ö ADCÖµ¡¡²»ÐèÒª×ª»»
+  //å°†é™€èžºä»ªçš„æµ‹é‡å€¼è½¬æˆå¼§åº¦æ¯ç§’
+  //åŠ é€Ÿåº¦å’Œç£åŠ›è®¡ä¿æŒ ADCå€¼ã€€ä¸éœ€è¦è½¬æ¢
 IMU_AHRSupdate(mygetqval[3] * M_PI/180, mygetqval[4] * M_PI/180, mygetqval[5] * M_PI/180,
    mygetqval[0], mygetqval[1], mygetqval[2], mygetqval[6], mygetqval[7], mygetqval[8]);
 
-  q[0] = q0; //·µ»Øµ±Ç°Öµ
+  q[0] = q0; //è¿”å›žå½“å‰å€¼
   q[1] = q1;
   q[2] = q2;
   q[3] = q3;
 }
 
 
-/**************************ÊµÏÖº¯Êý********************************************
-*º¯ÊýÔ­ÐÍ:	   void IMU_getYawPitchRoll(float * angles)
-*¹¦¡¡¡¡ÄÜ:	 ¸üÐÂËÄÔªÊý ·µ»Øµ±Ç°½âËãºóµÄ×ËÌ¬Êý¾Ý
-ÊäÈë²ÎÊý£º ½«Òª´æ·Å×ËÌ¬½ÇµÄÊý×éÊ×µØÖ·
-Êä³ö²ÎÊý£ºÃ»ÓÐ
+/**************************å®žçŽ°å‡½æ•°********************************************
+*å‡½æ•°åŽŸåž‹:	   void IMU_getYawPitchRoll(float * angles)
+*åŠŸã€€ã€€èƒ½:	 æ›´æ–°å››å…ƒæ•° è¿”å›žå½“å‰è§£ç®—åŽçš„å§¿æ€æ•°æ®
+è¾“å…¥å‚æ•°ï¼š å°†è¦å­˜æ”¾å§¿æ€è§’çš„æ•°ç»„é¦–åœ°å€
+è¾“å‡ºå‚æ•°ï¼šæ²¡æœ‰
 *******************************************************************************/
 void IMU_getYawPitchRoll(float * angles) {
-  float q[4]; //¡¡ËÄÔªÊý
-  volatile float gx=0.0, gy=0.0, gz=0.0; //¹À¼ÆÖØÁ¦·½Ïò
-  IMU_getQ(q); //¸üÐÂÈ«¾ÖËÄÔªÊý
+  float q[4]; //ã€€å››å…ƒæ•°
+  volatile float gx=0.0, gy=0.0, gz=0.0; //ä¼°è®¡é‡åŠ›æ–¹å‘
+  IMU_getQ(q); //æ›´æ–°å…¨å±€å››å…ƒæ•°
   
   angles[0] = -atan2(2 * q[1] * q[2] + 2 * q[0] * q[3], -2 * q[2]*q[2] - 2 * q[3] * q[3] + 1)* 180/M_PI; // yaw
   angles[1] = -asin(-2 * q[1] * q[3] + 2 * q[0] * q[2])* 180/M_PI; // pitch
   angles[2] = atan2(2 * q[2] * q[3] + 2 * q[0] * q[1], -2 * q[1] * q[1] - 2 * q[2] * q[2] + 1)* 180/M_PI; // roll
-  //if(angles[0]<0)angles[0]+=360.0f;  //½« -+180¶È  ×ª³É0-360¶È
+  //if(angles[0]<0)angles[0]+=360.0f;  //å°† -+180åº¦  è½¬æˆ0-360åº¦
 }
 
 //------------------End of File----------------------------

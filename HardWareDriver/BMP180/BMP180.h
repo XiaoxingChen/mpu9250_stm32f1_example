@@ -1,7 +1,7 @@
 #ifndef __BMP180_H
 #define __BMP180_H
 
-#include "common.h"  //°üº¬ËùÓĞµÄÇı¶¯ Í·ÎÄ¼ş
+#include "common.h"  //åŒ…å«æ‰€æœ‰çš„é©±åŠ¨ å¤´æ–‡ä»¶
 
 
 #define BMP180_ADDR                 0xEE     // default I2C address
@@ -45,13 +45,13 @@
 #define MSLP                    101325          // Mean Sea Level Pressure = 1013.25 hPA (1hPa = 100Pa = 1mbar)
 
 
-//ÒÔÏÂ³ÌĞòÎªBMP180Çı¶¯¹©Íâ²¿µ÷ÓÃµÄAPI
-void BMP180_init(void);	//³õÊ¼»¯BMP180
-void BMP180_getTemperat(int32_t *_Temperature);	//Temp(0.1C):  ¶ÁÈ¡ÎÂ¶È
-void BMP180_getPress(int32_t *_TruePressure);  //Pressure(Pa) ¶ÁÈ¡ÆøÑ¹Öµ
-void BMP180_getAlt(int32_t *_centimeters); //Alt(cm) ¶ÁÈ¡¸ß¶È
-void BMP180_Routing(void);	  //Õâ¸ö³ÌĞòĞèÒªÓÃ»§¶¨Ê±µ÷ÓÃ£¬ÒÔ¸üĞÂµ±Ç°ÎÂ¶ÈºÍÆøÑ¹Öµ 
-void BMP180_ResetAlt(int32_t _centimeters);	//¸´Î»ÆøÑ¹¸ß¶È¡£°Ñµ±Ç°µÄ¸ß¶ÈÉèÖÃ³É 0Ã×
+//ä»¥ä¸‹ç¨‹åºä¸ºBMP180é©±åŠ¨ä¾›å¤–éƒ¨è°ƒç”¨çš„API
+void BMP180_init(void);	//åˆå§‹åŒ–BMP180
+void BMP180_getTemperat(int32_t *_Temperature);	//Temp(0.1C):  è¯»å–æ¸©åº¦
+void BMP180_getPress(int32_t *_TruePressure);  //Pressure(Pa) è¯»å–æ°”å‹å€¼
+void BMP180_getAlt(int32_t *_centimeters); //Alt(cm) è¯»å–é«˜åº¦
+void BMP180_Routing(void);	  //è¿™ä¸ªç¨‹åºéœ€è¦ç”¨æˆ·å®šæ—¶è°ƒç”¨ï¼Œä»¥æ›´æ–°å½“å‰æ¸©åº¦å’Œæ°”å‹å€¼ 
+void BMP180_ResetAlt(int32_t _centimeters);	//å¤ä½æ°”å‹é«˜åº¦ã€‚æŠŠå½“å‰çš„é«˜åº¦è®¾ç½®æˆ 0ç±³
 
 #endif
 

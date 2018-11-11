@@ -50,13 +50,13 @@
 #define MSLP                    101325          // Mean Sea Level Pressure = 1013.25 hPA (1hPa = 100Pa = 1mbar)
 
 
-//ÒÔÏÂ³ÌĞòÎªBMP085Çı¶¯¹©Íâ²¿µ÷ÓÃµÄAPI
-void BMP085_init(void);	//³õÊ¼»¯BMP085
-void BMP085_getTemperat(int32_t *_Temperature);	//Temp(0.1C):  ¶ÁÈ¡ÎÂ¶È
-void BMP085_getPress(int32_t *_TruePressure);  //Pressure(Pa) ¶ÁÈ¡ÆøÑ¹Öµ
-void BMP085_getAlt(int32_t *_centimeters); //Alt(cm) ¶ÁÈ¡¸ß¶È
-void BMP085_Routing(void);	  //Õâ¸ö³ÌĞòĞèÒªÓÃ»§¶¨Ê±µ÷ÓÃ£¬ÒÔ¸üĞÂµ±Ç°ÎÂ¶ÈºÍÆøÑ¹Öµ 
-void BMP085_ResetAlt(int32_t _centimeters);	//¸´Î»ÆøÑ¹¸ß¶È¡£°Ñµ±Ç°µÄ¸ß¶ÈÉèÖÃ³É 0Ã×
+//ä»¥ä¸‹ç¨‹åºä¸ºBMP085é©±åŠ¨ä¾›å¤–éƒ¨è°ƒç”¨çš„API
+void BMP085_init(void);	//åˆå§‹åŒ–BMP085
+void BMP085_getTemperat(int32_t *_Temperature);	//Temp(0.1C):  è¯»å–æ¸©åº¦
+void BMP085_getPress(int32_t *_TruePressure);  //Pressure(Pa) è¯»å–æ°”å‹å€¼
+void BMP085_getAlt(int32_t *_centimeters); //Alt(cm) è¯»å–é«˜åº¦
+void BMP085_Routing(void);	  //è¿™ä¸ªç¨‹åºéœ€è¦ç”¨æˆ·å®šæ—¶è°ƒç”¨ï¼Œä»¥æ›´æ–°å½“å‰æ¸©åº¦å’Œæ°”å‹å€¼ 
+void BMP085_ResetAlt(int32_t _centimeters);	//å¤ä½æ°”å‹é«˜åº¦ã€‚æŠŠå½“å‰çš„é«˜åº¦è®¾ç½®æˆ 0ç±³
 
 #endif
 

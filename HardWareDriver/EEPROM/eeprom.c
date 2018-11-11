@@ -1,18 +1,18 @@
 /* eeprom.c file
-±àĞ´Õß£ºlisn3188
-ÍøÖ·£ºwww.chiplab7.net
-×÷ÕßE-mail£ºlisn3188@163.com
-±àÒë»·¾³£ºMDK-Lite  Version: 4.23
-³õ°æÊ±¼ä: 2012-05-05
-²âÊÔ£º ±¾³ÌĞòÒÑÔÚµÚÆßÊµÑéÊÒµÄmini IMUÉÏÍê³É²âÊÔ
-¹¦ÄÜ£º
-½«FlashÓÃ×÷EEPROM ÓÃÓÚ±£´æÆ«ÖÃºÍ±ê¶¨Êı¾İ
+ç¼–å†™è€…ï¼šlisn3188
+ç½‘å€ï¼šwww.chiplab7.net
+ä½œè€…E-mailï¼šlisn3188@163.com
+ç¼–è¯‘ç¯å¢ƒï¼šMDK-Lite  Version: 4.23
+åˆç‰ˆæ—¶é—´: 2012-05-05
+æµ‹è¯•ï¼š æœ¬ç¨‹åºå·²åœ¨ç¬¬ä¸ƒå®éªŒå®¤çš„mini IMUä¸Šå®Œæˆæµ‹è¯•
+åŠŸèƒ½ï¼š
+å°†Flashç”¨ä½œEEPROM ç”¨äºä¿å­˜åç½®å’Œæ ‡å®šæ•°æ®
 ------------------------------------
  */			  
 
 #include "eeprom.h"
 
-struct data_map Config;	//ÅäÖÃĞÅÏ¢
+struct data_map Config;	//é…ç½®ä¿¡æ¯
 
 void load_config(void){
 	int16_t i;
@@ -25,7 +25,7 @@ void load_config(void){
 		ptr++;
 	}
 	FLASH_Lock();
-	if(Config.is_good != (int16_t)0xA55A){ //Êı¾İÎŞĞ§ £¬´ËÊ±ĞèÒª×°ÔØÄ¬ÈÏÖµ¡£
+	if(Config.is_good != (int16_t)0xA55A){ //æ•°æ®æ— æ•ˆ ï¼Œæ­¤æ—¶éœ€è¦è£…è½½é»˜è®¤å€¼ã€‚
 		Config.is_good = 0xA55A;
 		Config.dGx_offset = 0;
 		Config.dGy_offset = 0;
@@ -39,17 +39,17 @@ void load_config(void){
 		Config.dMy_scale =1.0f;
 		Config.dMz_scale =1.0f;
 	
-		Write_config();	 //½«Ä¬ÈÏÖµĞ´Èëflash
+		Write_config();	 //å°†é»˜è®¤å€¼å†™å…¥flash
 	}
 }
 
-//½«µ±Ç°ÅäÖÃĞ´Èëflash
+//å°†å½“å‰é…ç½®å†™å…¥flash
 void Write_config(void){
 	int16_t i;
 	int16_t *ptr = &Config.is_good;
 	uint32_t ptemp_addr = PAGE_Config;
 	FLASH_Unlock();
- 	FLASH_ErasePage(PAGE_Config); //²Á Ò³
+ 	FLASH_ErasePage(PAGE_Config); //æ“¦ é¡µ
 	for(i=0;i<sizeof(Config)/2;i++){
 	 	FLASH_ProgramHalfWord(ptemp_addr,ptr[i]);
 	 	ptemp_addr+=2;

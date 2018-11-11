@@ -1,15 +1,15 @@
 #ifndef __IMU_H
 #define __IMU_H
 
-#include "common.h"  //°üº¬ËùÓĞµÄÇı¶¯ Í·ÎÄ¼ş
+#include "common.h"  //åŒ…å«æ‰€æœ‰çš„é©±åŠ¨ å¤´æ–‡ä»¶
 
 #include <math.h>
 #define M_PI  (float)3.1415926535
 
-//Mini IMU AHRS ½âËãµÄAPI
-void IMU_init(void); //³õÊ¼»¯
-void IMU_getYawPitchRoll(float * ypr); //¸üĞÂ×ËÌ¬
-uint32_t micros(void);	//¶ÁÈ¡ÏµÍ³ÉÏµçºóµÄÊ±¼ä  µ¥Î» us 
+//Mini IMU AHRS è§£ç®—çš„API
+void IMU_init(void); //åˆå§‹åŒ–
+void IMU_getYawPitchRoll(float * ypr); //æ›´æ–°å§¿æ€
+uint32_t micros(void);	//è¯»å–ç³»ç»Ÿä¸Šç”µåçš„æ—¶é—´  å•ä½ us 
 
 #endif
 

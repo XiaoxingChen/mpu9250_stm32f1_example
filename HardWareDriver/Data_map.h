@@ -1,10 +1,10 @@
 #ifndef __DATAMAP_H
 #define __DATAMAP_H
 
-#define  PAGE_Config    (0x08000000 + 62 * 1024) //½«ÅäÖÃĞÅÏ¢´æ·ÅÔÚµÚ62Ò³Flash
+#define  PAGE_Config    (0x08000000 + 62 * 1024) //å°†é…ç½®ä¿¡æ¯å­˜æ”¾åœ¨ç¬¬62é¡µFlash
 
 struct data_map{
-	int16_t is_good;   //Êı¾İÊÇ·ñÓĞĞ§
+	int16_t is_good;   //æ•°æ®æ˜¯å¦æœ‰æ•ˆ
 	int16_t dGx_offset;
 	int16_t dGy_offset;
 	int16_t dGz_offset;

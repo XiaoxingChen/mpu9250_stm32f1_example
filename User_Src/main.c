@@ -1,28 +1,28 @@
 /* main.c file
-±àĞ´Õß£ºlisn3188
-ÍøÖ·£ºwww.chiplab7.com
-×÷ÕßE-mail£ºlisn3188@163.com
-±àÒë»·¾³£ºMDK-Lite  Version: 4.23
-³õ°æÊ±¼ä: 2012-05-05
-²âÊÔ£º ±¾³ÌĞòÒÑÔÚµÚÆßÊµÑéÊÒµÄmini IMUÉÏÍê³É²âÊÔ
-Mini IMU AHRS Ä£¿é¹Ù·½ÏúÊÛµØÖ·£ºHttp://chiplab7.taobao.com
-¹¦ÄÜ£º
-1.³õÊ¼»¯¸÷¸ö´«¸ĞÆ÷£¬
-2.ÔËĞĞ×ËÌ¬½âËãºÍ¸ß¶È²âÁ¿
-3.½«½âËãµÄ×ËÌ¬ºÍ¸÷¸ö´«¸ĞÆ÷µÄÊä³öÉÏ´«µ½ MiniIMU AHRS ²âÊÔÈí¼ş
-4.ÏìÓ¦ PC·¢ËÍµÄÃüÁî
+ç¼–å†™è€…ï¼šlisn3188
+ç½‘å€ï¼šwww.chiplab7.com
+ä½œè€…E-mailï¼šlisn3188@163.com
+ç¼–è¯‘ç¯å¢ƒï¼šMDK-Lite  Version: 4.23
+åˆç‰ˆæ—¶é—´: 2012-05-05
+æµ‹è¯•ï¼š æœ¬ç¨‹åºå·²åœ¨ç¬¬ä¸ƒå®éªŒå®¤çš„mini IMUä¸Šå®Œæˆæµ‹è¯•
+Mini IMU AHRS æ¨¡å—å®˜æ–¹é”€å”®åœ°å€ï¼šHttp://chiplab7.taobao.com
+åŠŸèƒ½ï¼š
+1.åˆå§‹åŒ–å„ä¸ªä¼ æ„Ÿå™¨ï¼Œ
+2.è¿è¡Œå§¿æ€è§£ç®—å’Œé«˜åº¦æµ‹é‡
+3.å°†è§£ç®—çš„å§¿æ€å’Œå„ä¸ªä¼ æ„Ÿå™¨çš„è¾“å‡ºä¸Šä¼ åˆ° MiniIMU AHRS æµ‹è¯•è½¯ä»¶
+4.å“åº” PCå‘é€çš„å‘½ä»¤
 ------------------------------------
 */
 
-#include "common.h"  //°üº¬ËùÓĞµÄÇı¶¯ Í·ÎÄ¼ş
+#include "common.h"  //åŒ…å«æ‰€æœ‰çš„é©±åŠ¨ å¤´æ–‡ä»¶
 
-//ÉÏ´«Êı¾İµÄ×´Ì¬»ú
-#define REIMU  0x01 //ÉÏ´«½âËãµÄ×ËÌ¬Êı¾İ
-#define REMOV  0x02	//ÉÏ´«´«¸ĞÆ÷µÄÊä³ö
-#define REHMC  0x03	//ÉÏ´«´ÅÁ¦¼ÆµÄ±ê¶¨Öµ
+//ä¸Šä¼ æ•°æ®çš„çŠ¶æ€æœº
+#define REIMU  0x01 //ä¸Šä¼ è§£ç®—çš„å§¿æ€æ•°æ®
+#define REMOV  0x02	//ä¸Šä¼ ä¼ æ„Ÿå™¨çš„è¾“å‡º
+#define REHMC  0x03	//ä¸Šä¼ ç£åŠ›è®¡çš„æ ‡å®šå€¼
 
-#define Upload_Speed  15   //Êı¾İÉÏ´«ËÙ¶È  µ¥Î» Hz
-#define upload_time (1000000/Upload_Speed)/2  //¼ÆËãÉÏ´«µÄÊ±¼ä¡£µ¥Î»Îªus
+#define Upload_Speed  15   //æ•°æ®ä¸Šä¼ é€Ÿåº¦  å•ä½ Hz
+#define upload_time (1000000/Upload_Speed)/2  //è®¡ç®—ä¸Šä¼ çš„æ—¶é—´ã€‚å•ä½ä¸ºus
 
 int16_t ax, ay, az;	
 int16_t gx, gy, gz;
@@ -30,52 +30,52 @@ int16_t hx, hy, hz;
 int32_t Temperature = 0, Pressure = 0, Altitude = 0;
 uint32_t system_micrsecond;
 int16_t hmcvalue[3];
-u8 state= REIMU;  //·¢ËÍÌØ¶¨Ö¡ µÄ×´Ì¬»ú
-/**************************ÊµÏÖº¯Êı********************************************
-*º¯ÊıÔ­ĞÍ:		int main(void)
-*¹¦¡¡¡¡ÄÜ:		Ö÷³ÌĞò
+u8 state= REIMU;  //å‘é€ç‰¹å®šå¸§ çš„çŠ¶æ€æœº
+/**************************å®ç°å‡½æ•°********************************************
+*å‡½æ•°åŸå‹:		int main(void)
+*åŠŸã€€ã€€èƒ½:		ä¸»ç¨‹åº
 *******************************************************************************/
 int main(void)
 {
 	int16_t Math_hz=0;
-	unsigned char PC_comm; //PC ÃüÁî¹Ø¼ü×Ö½Ú	 
+	unsigned char PC_comm; //PC å‘½ä»¤å…³é”®å­—èŠ‚	 
 	float ypr[3]; // yaw pitch roll
-	/* ÅäÖÃÏµÍ³Ê±ÖÓÎª72M Ê¹ÓÃÍâ²¿8M¾§Ìå+PLL*/      
+	/* é…ç½®ç³»ç»Ÿæ—¶é’Ÿä¸º72M ä½¿ç”¨å¤–éƒ¨8Mæ™¶ä½“+PLL*/      
     //SystemInit();
-	delay_init(72);		//ÑÓÊ±³õÊ¼»¯
+	delay_init(72);		//å»¶æ—¶åˆå§‹åŒ–
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);	
 	GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
-    Initial_LED_GPIO();	//³õÊ¼»¯STM32-SDK°å×ÓÉÏµÄLED½Ó¿Ú
+    Initial_LED_GPIO();	//åˆå§‹åŒ–STM32-SDKæ¿å­ä¸Šçš„LEDæ¥å£
 	Initial_PWMLED();
 	Initial_UART1(115200L);
 	Initial_UART2(115200L);
-	load_config();  //´ÓflashÖĞ¶ÁÈ¡ÅäÖÃĞÅÏ¢ -->eeprom.c
-	IIC_Init();	 //³õÊ¼»¯I2C½Ó¿Ú
-	delay_ms(300);	//µÈ´ıÆ÷¼şÉÏµç
+	load_config();  //ä»flashä¸­è¯»å–é…ç½®ä¿¡æ¯ -->eeprom.c
+	IIC_Init();	 //åˆå§‹åŒ–I2Cæ¥å£
+	delay_ms(300);	//ç­‰å¾…å™¨ä»¶ä¸Šç”µ
 	//UART1_Put_String("Initialize...\r\n");
-	IMU_init(); //³õÊ¼»¯IMUºÍ´«¸ĞÆ÷
+	IMU_init(); //åˆå§‹åŒ–IMUå’Œä¼ æ„Ÿå™¨
 	system_micrsecond=micros();
-	while(1){	//Ö÷Ñ­»·
+	while(1){	//ä¸»å¾ªç¯
 		
-	//delay_ms(1); //ÑÓÊ±£¬²»ÒªËãÄÇÃ´¿ì¡£
-	IMU_getYawPitchRoll(ypr); //×ËÌ¬¸üĞÂ
-	Math_hz++; //½âËã´ÎÊı ++
-	BMP180_Routing(); //´¦ÀíBMP018 ÊÂÎñ ¿ªÆô×ª»»ºÍ¶ÁÈ¡½á¹û½«ÔÚÕâ¸ö×Ó³ÌĞòÖĞ½øĞĞ 
+	//delay_ms(1); //å»¶æ—¶ï¼Œä¸è¦ç®—é‚£ä¹ˆå¿«ã€‚
+	IMU_getYawPitchRoll(ypr); //å§¿æ€æ›´æ–°
+	Math_hz++; //è§£ç®—æ¬¡æ•° ++
+	BMP180_Routing(); //å¤„ç†BMP018 äº‹åŠ¡ å¼€å¯è½¬æ¢å’Œè¯»å–ç»“æœå°†åœ¨è¿™ä¸ªå­ç¨‹åºä¸­è¿›è¡Œ 
 
-//-------------ÉÏÎ»»ú------------------------------
-	//ÊÇ·ñµ½ÁË¸üĞÂ ÉÏÎ»»úµÄÊ±¼äÁË£¿
+//-------------ä¸Šä½æœº------------------------------
+	//æ˜¯å¦åˆ°äº†æ›´æ–° ä¸Šä½æœºçš„æ—¶é—´äº†ï¼Ÿ
 	if((micros()-system_micrsecond)>upload_time){
 	switch(state){ 
 	case REIMU:
-	BMP180_getTemperat(&Temperature); //¶ÁÈ¡×î½üµÄÎÂ¶ÈÖµ
-	BMP180_getPress(&Pressure);	   //¶ÁÈ¡×î½üµÄÆøÑ¹²âÁ¿Öµ
-	BMP180_getAlt(&Altitude);	   //¶ÁÈ¡Ïà¶Ô¸ß¶È
+	BMP180_getTemperat(&Temperature); //è¯»å–æœ€è¿‘çš„æ¸©åº¦å€¼
+	BMP180_getPress(&Pressure);	   //è¯»å–æœ€è¿‘çš„æ°”å‹æµ‹é‡å€¼
+	BMP180_getAlt(&Altitude);	   //è¯»å–ç›¸å¯¹é«˜åº¦
 	UART1_ReportIMU((int16_t)(ypr[0]*10.0),(int16_t)(ypr[1]*10.0),
 	(int16_t)(ypr[2]*10.0),Altitude/10,Temperature,Pressure/10,Math_hz*16);
 	UART2_ReportIMU((int16_t)(ypr[0]*10.0),(int16_t)(ypr[1]*10.0),
 	(int16_t)(ypr[2]*10.0),Altitude/10,Temperature,Pressure/10,Math_hz*Upload_Speed);
 	Math_hz=0;
-	state = REMOV; //¸ü¸Ä×´Ì¬¡£
+	state = REMOV; //æ›´æ”¹çŠ¶æ€ã€‚
 	break;
 	case REMOV:
 	MPU6050_getlastMotion6(&ax, &ay, &az, &gx, &gy, &gz);
@@ -83,30 +83,30 @@ int main(void)
 	UART1_ReportMotion(ax,ay,az,gx,gy,gz,hx,hy,hz);
 	UART2_ReportMotion(ax,ay,az,gx,gy,gz,hx,hy,hz);
 	state = REIMU;
-	if(HMC5883_calib)state = REHMC; //ĞèÒª·¢ËÍµ±Ç°´ÅÁ¦¼Æ±ê¶¨Öµ
+	if(HMC5883_calib)state = REHMC; //éœ€è¦å‘é€å½“å‰ç£åŠ›è®¡æ ‡å®šå€¼
 	break;
 	default: 
 	UART2_ReportHMC(HMC5883_maxx,HMC5883_maxy,HMC5883_maxz,
-		 HMC5883_minx,HMC5883_miny,HMC5883_minz,0);//·¢ËÍ±ê¶¨Öµ
+		 HMC5883_minx,HMC5883_miny,HMC5883_minz,0);//å‘é€æ ‡å®šå€¼
 	state = REIMU;
 	break;
 	}//switch(state) 			 
-	system_micrsecond=micros();	 //È¡ÏµÍ³Ê±¼ä µ¥Î» us 
-	LED_Change();	//LED1¸Ä±äÁÁ¶È
+	system_micrsecond=micros();	 //å–ç³»ç»Ÿæ—¶é—´ å•ä½ us 
+	LED_Change();	//LED1æ”¹å˜äº®åº¦
 	}
 //--------------------------------------------------
-	//´¦ÀíPC·¢ËÍÀ´µÄÃüÁî
+	//å¤„ç†PCå‘é€æ¥çš„å‘½ä»¤
 	if((PC_comm=UART2_CommandRoute())!=0xff)
 	{
-	switch(PC_comm){ //¼ì²éÃüÁî±êÊ¶
-	case Gyro_init:			MPU6050_InitGyro_Offset(); break; //¶ÁÈ¡ÍÓÂİÒÇÁãÆ«
-	case High_init:			BMP180_ResetAlt(0); 	break;		//ÆøÑ¹¸ß¶È ÇåÁã
-	case HMC_calib_begin:	HMC5883L_Start_Calib();	break; //¿ªÊ¼´ÅÁ¦¼Æ±ê¶¨
-	case HMC_calib:		HMC5883L_Save_Calib();	break;   //±£´æ´ÅÁ¦¼Æ±ê¶¨
+	switch(PC_comm){ //æ£€æŸ¥å‘½ä»¤æ ‡è¯†
+	case Gyro_init:			MPU6050_InitGyro_Offset(); break; //è¯»å–é™€èºä»ªé›¶å
+	case High_init:			BMP180_ResetAlt(0); 	break;		//æ°”å‹é«˜åº¦ æ¸…é›¶
+	case HMC_calib_begin:	HMC5883L_Start_Calib();	break; //å¼€å§‹ç£åŠ›è®¡æ ‡å®š
+	case HMC_calib:		HMC5883L_Save_Calib();	break;   //ä¿å­˜ç£åŠ›è®¡æ ‡å®š
 	}
-	}// ´¦ÀíPC ·¢ËÍµÄÃüÁî
+	}// å¤„ç†PC å‘é€çš„å‘½ä»¤
 
-	}//Ö÷Ñ­»· while(1) ½áÊø
+	}//ä¸»å¾ªç¯ while(1) ç»“æŸ
 
 }  //main	
 

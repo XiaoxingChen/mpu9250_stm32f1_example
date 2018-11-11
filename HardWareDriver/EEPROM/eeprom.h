@@ -5,12 +5,12 @@
 #include "Data_map.h"
 
 /*
-Ê¹ÓÃ STM32F ÄÚ²¿Flash×öEEPROM
-Òı³öµÄAPI ×Ó³ÌĞò
+ä½¿ç”¨ STM32F å†…éƒ¨FlashåšEEPROM
+å¼•å‡ºçš„API å­ç¨‹åº
 */
 
-void Write_config(void);  //Ğ´ÈëÅäÖÃ
-void load_config(void);	  //¶ÁÈ¡ÅäÖÃ
+void Write_config(void);  //å†™å…¥é…ç½®
+void load_config(void);	  //è¯»å–é…ç½®
 
 #endif /* __EEPROM_H */
 

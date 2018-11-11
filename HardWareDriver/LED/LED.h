@@ -3,8 +3,8 @@
 
 #include "stm32f10x.h"
 
-//LEDs ¶¨ÒåLED ²Ù×÷ºê.
-//(Êä³öµÍµçÆ½,µÆÁÁ;Êä³ö¸ßµçÆ½µÆÃğ)
+//LEDs å®šä¹‰LED æ“ä½œå®.
+//(è¾“å‡ºä½ç”µå¹³,ç¯äº®;è¾“å‡ºé«˜ç”µå¹³ç¯ç­)
 #define LED_ON()   GPIO_ResetBits(GPIOA, GPIO_Pin_8)
 #define LED_OFF()  GPIO_SetBits(GPIOA, GPIO_Pin_8)
 

@@ -1,42 +1,42 @@
 /* BMP180.c file
-±àĞ´Õß£ºlisn3188
-ÍøÖ·£ºwww.chiplab7.com
-×÷ÕßE-mail£ºlisn3188@163.com
-±àÒë»·¾³£ºMDK-Lite  Version: 4.23
-³õ°æÊ±¼ä: 2012-04-25
-²âÊÔ£º ±¾³ÌĞòÒÑÔÚµÚÆßÊµÑéÊÒµÄmini IMUÉÏÍê³É²âÊÔ
-¹¦ÄÜ£º
-Ìá¹©BMP180 ³õÊ¼»¯ ¿ØÖÆ ¶ÁÈ¡ÎÂ¶È ÆøÑ¹ API
+ç¼–å†™è€…ï¼šlisn3188
+ç½‘å€ï¼šwww.chiplab7.com
+ä½œè€…E-mailï¼šlisn3188@163.com
+ç¼–è¯‘ç¯å¢ƒï¼šMDK-Lite  Version: 4.23
+åˆç‰ˆæ—¶é—´: 2012-04-25
+æµ‹è¯•ï¼š æœ¬ç¨‹åºå·²åœ¨ç¬¬ä¸ƒå®éªŒå®¤çš„mini IMUä¸Šå®Œæˆæµ‹è¯•
+åŠŸèƒ½ï¼š
+æä¾›BMP180 åˆå§‹åŒ– æ§åˆ¶ è¯»å–æ¸©åº¦ æ°”å‹ API
 ------------------------------------
  */
 #include "BMP180.h"
 #include <math.h>
 
-// ÆøÑ¹¼Æ×´Ì¬»ú
+// æ°”å‹è®¡çŠ¶æ€æœº
 #define SCTemperature  0x01
 #define CTemperatureing  0x02
 #define SCPressure  0x03
 #define SCPressureing  0x04
-#define Time_Limit 30000L  //Ã¿´Î×ª»»µÄÑÓÊ±Ê±¼ä
+#define Time_Limit 30000L  //æ¯æ¬¡è½¬æ¢çš„å»¶æ—¶æ—¶é—´
 #define Time_tempC 6000L
 
-#define MOVAVG_SIZE   32  //±£´æ×î½üµÄ MOVAVG_SIZE ¸öÖµ 
+#define MOVAVG_SIZE   32  //ä¿å­˜æœ€è¿‘çš„ MOVAVG_SIZE ä¸ªå€¼ 
 
-volatile int16_t ac1,ac2,ac3,b1,b2,mb,mc,md;     // ±ê¶¨µÄÊı¾İ  
-volatile uint16_t ac4,ac5,ac6;                   // ±ê¶¨µÄÊı¾İ
-volatile int32_t b5;                    //ÎÂ¶È
+volatile int16_t ac1,ac2,ac3,b1,b2,mb,mc,md;     // æ ‡å®šçš„æ•°æ®  
+volatile uint16_t ac4,ac5,ac6;                   // æ ‡å®šçš„æ•°æ®
+volatile int32_t b5;                    //æ¸©åº¦
 volatile uint32_t  ConvetTime;  
-uint8_t _buff[BUFFER_SIZE];    // Êı¾İ»º³åÇø
-int16_t _oss;                 // ¹ı²ÉÑùÉèÖÃ
+uint8_t _buff[BUFFER_SIZE];    // æ•°æ®ç¼“å†²åŒº
+int16_t _oss;                 // è¿‡é‡‡æ ·è®¾ç½®
   
 int32_t _cm_Offset, _Pa_Offset;
 int32_t _param_datum, _param_centimeters;
 volatile unsigned char BPM085_ST;
 int32_t last_Temperature,last_Pressure,last_Alt;
 
-//ÏÈ½øÏÈ³ö¹ıÂËÆ÷Êı×é
+//å…ˆè¿›å…ˆå‡ºè¿‡æ»¤å™¨æ•°ç»„
 int32_t  Temp_buffer[MOVAVG_SIZE],Press_buffer[MOVAVG_SIZE],Alt_buffer[MOVAVG_SIZE];
-uint8_t temp_index=0,press_index=0,alt_index=0; //¶ÓÁĞÖ¸Õë
+uint8_t temp_index=0,press_index=0,alt_index=0; //é˜Ÿåˆ—æŒ‡é’ˆ
 
 unsigned char BMP180_IS_Finish(void);
 void BMP180_writemem(uint8_t _addr, uint8_t _val);
@@ -45,7 +45,7 @@ void BMP180_getTemperature(int32_t *_Temperature,u8 rw);
 void BMP180_calcTruePressure(int32_t *_TruePressure,u8 writeread);
 void BMP180_getAltitude(int32_t *_centimeters,u8 rw);
 
-//¶ÁÈ¡¶ÓÁĞ µÄÆ½¾ùÖµ
+//è¯»å–é˜Ÿåˆ— çš„å¹³å‡å€¼
 int32_t MS561101BA_getAvg(int32_t * buff, int size) {
   float sum = 0.0;
   int i;
@@ -55,98 +55,98 @@ int32_t MS561101BA_getAvg(int32_t * buff, int size) {
   return sum / size;
 }
 
-/**************************ÊµÏÖº¯Êı********************************************
-*º¯ÊıÔ­ĞÍ:		void BMP180_newTemperature(int32_t T)
-*¹¦¡¡¡¡ÄÜ:		Ìí¼ÓÒ»¸öĞÂµÄÖµµ½ÎÂ¶È¹ıÂËÆ÷
+/**************************å®ç°å‡½æ•°********************************************
+*å‡½æ•°åŸå‹:		void BMP180_newTemperature(int32_t T)
+*åŠŸã€€ã€€èƒ½:		æ·»åŠ ä¸€ä¸ªæ–°çš„å€¼åˆ°æ¸©åº¦è¿‡æ»¤å™¨
 *******************************************************************************/
 void BMP180_newTemperature(int32_t val)
 {	
   Temp_buffer[temp_index] = val;
   temp_index = (temp_index + 1) % MOVAVG_SIZE;
 
-  last_Temperature=MS561101BA_getAvg(Temp_buffer,MOVAVG_SIZE);	//È¡Æ½¾ùÖµ
+  last_Temperature=MS561101BA_getAvg(Temp_buffer,MOVAVG_SIZE);	//å–å¹³å‡å€¼
 }
 
-/**************************ÊµÏÖº¯Êı********************************************
-*º¯ÊıÔ­ĞÍ:		void BMP180_newPressure(int32_t P)
-*¹¦¡¡¡¡ÄÜ:		Ìí¼ÓÒ»¸öĞÂµÄÖµµ½ÆøÑ¹¹ıÂËÆ÷
+/**************************å®ç°å‡½æ•°********************************************
+*å‡½æ•°åŸå‹:		void BMP180_newPressure(int32_t P)
+*åŠŸã€€ã€€èƒ½:		æ·»åŠ ä¸€ä¸ªæ–°çš„å€¼åˆ°æ°”å‹è¿‡æ»¤å™¨
 *******************************************************************************/
 void BMP180_newPressure(int32_t val)
 {	
   Press_buffer[press_index] = val;
   press_index = (press_index + 1) % MOVAVG_SIZE;
 
-  last_Pressure = MS561101BA_getAvg(Press_buffer,MOVAVG_SIZE);	//È¡Æ½¾ùÖµ
+  last_Pressure = MS561101BA_getAvg(Press_buffer,MOVAVG_SIZE);	//å–å¹³å‡å€¼
 }
 
-/**************************ÊµÏÖº¯Êı********************************************
-*º¯ÊıÔ­ĞÍ:		void BMP180_newALT(int32_t A)
-*¹¦¡¡¡¡ÄÜ:		Ìí¼ÓÒ»¸öĞÂµÄÖµµ½¸ß¶È¹ıÂËÆ÷
+/**************************å®ç°å‡½æ•°********************************************
+*å‡½æ•°åŸå‹:		void BMP180_newALT(int32_t A)
+*åŠŸã€€ã€€èƒ½:		æ·»åŠ ä¸€ä¸ªæ–°çš„å€¼åˆ°é«˜åº¦è¿‡æ»¤å™¨
 *******************************************************************************/
 void BMP180_newALT(int32_t val)
 {	
   Alt_buffer[alt_index] = val;
   alt_index = (alt_index + 1) % MOVAVG_SIZE;
 
-  last_Alt = MS561101BA_getAvg(Alt_buffer,MOVAVG_SIZE);	//È¡Æ½¾ùÖµ
+  last_Alt = MS561101BA_getAvg(Alt_buffer,MOVAVG_SIZE);	//å–å¹³å‡å€¼
 }
 
-/**************************ÊµÏÖº¯Êı********************************************
-*º¯ÊıÔ­ĞÍ:		void BMP180_getAlt(int32_t *_centimeters)
-*¹¦¡¡¡¡ÄÜ:		¶ÁÈ¡×îĞÂµÄ¸ß¶ÈÖµ£¬µ¥Î»Îª cm 
+/**************************å®ç°å‡½æ•°********************************************
+*å‡½æ•°åŸå‹:		void BMP180_getAlt(int32_t *_centimeters)
+*åŠŸã€€ã€€èƒ½:		è¯»å–æœ€æ–°çš„é«˜åº¦å€¼ï¼Œå•ä½ä¸º cm 
 *******************************************************************************/
 void BMP180_getAlt(int32_t *_centimeters)
 {
 	*_centimeters = last_Alt;	
 }
 
-/**************************ÊµÏÖº¯Êı********************************************
-*º¯ÊıÔ­ĞÍ:		void BMP180_getPress(int32_t *_TruePressure)
-*¹¦¡¡¡¡ÄÜ:		¶ÁÈ¡×îĞÂµÄÆøÑ¹Öµ£¬µ¥Î»Îª pa 
+/**************************å®ç°å‡½æ•°********************************************
+*å‡½æ•°åŸå‹:		void BMP180_getPress(int32_t *_TruePressure)
+*åŠŸã€€ã€€èƒ½:		è¯»å–æœ€æ–°çš„æ°”å‹å€¼ï¼Œå•ä½ä¸º pa 
 *******************************************************************************/
 void BMP180_getPress(int32_t *_TruePressure)
 {
 	*_TruePressure = last_Pressure;
 }
 
-/**************************ÊµÏÖº¯Êı********************************************
-*º¯ÊıÔ­ĞÍ:		void BMP180_getTemperat(int32_t *_Temperature)
-*¹¦¡¡¡¡ÄÜ:		¶ÁÈ¡×îĞÂµÄÎÂ¶ÈÖµ£¬µ¥Î»Îª 0.1C 
+/**************************å®ç°å‡½æ•°********************************************
+*å‡½æ•°åŸå‹:		void BMP180_getTemperat(int32_t *_Temperature)
+*åŠŸã€€ã€€èƒ½:		è¯»å–æœ€æ–°çš„æ¸©åº¦å€¼ï¼Œå•ä½ä¸º 0.1C 
 *******************************************************************************/
 void BMP180_getTemperat(int32_t *_Temperature)
 {
 	*_Temperature =	last_Temperature;
 }
 
-/**************************ÊµÏÖº¯Êı********************************************
-*º¯ÊıÔ­ĞÍ:		void BMP180_Routing(void)
-*¹¦¡¡¡¡ÄÜ:		BMP180 ÔËĞĞÊ±µ÷ÓÃµÄ³ÌĞò¡£
-				¸Ã³ÌĞò»á²»Í£µØ¶ÁÈ¡ÆøÑ¹ÖµºÍÎÂ¶ÈÖµ£¬
-				ÓÃ»§ĞèÒª¶¨ÆÚµ÷ÓÃÕâ¸ö³ÌĞò£¬ÒÔ¸üĞÂ¸ß¶ÈºÍÎÂ¶ÈĞÅÏ¢
+/**************************å®ç°å‡½æ•°********************************************
+*å‡½æ•°åŸå‹:		void BMP180_Routing(void)
+*åŠŸã€€ã€€èƒ½:		BMP180 è¿è¡Œæ—¶è°ƒç”¨çš„ç¨‹åºã€‚
+				è¯¥ç¨‹åºä¼šä¸åœåœ°è¯»å–æ°”å‹å€¼å’Œæ¸©åº¦å€¼ï¼Œ
+				ç”¨æˆ·éœ€è¦å®šæœŸè°ƒç”¨è¿™ä¸ªç¨‹åºï¼Œä»¥æ›´æ–°é«˜åº¦å’Œæ¸©åº¦ä¿¡æ¯
 *******************************************************************************/
 void BMP180_Routing(void)
 {
   switch(BPM085_ST){
-  case SCTemperature: //¿ªÊ¼ÎÂ¶È×ª»»
+  case SCTemperature: //å¼€å§‹æ¸©åº¦è½¬æ¢
   				BMP180_writemem(CONTROL, READ_TEMPERATURE); 
-				BPM085_ST = CTemperatureing;//×´Ì¬ÇĞ»»
-				ConvetTime = micros(); //¶ÁÈ¡¿ªÊ¼×ª»»µÄÊ±¼ä
+				BPM085_ST = CTemperatureing;//çŠ¶æ€åˆ‡æ¢
+				ConvetTime = micros(); //è¯»å–å¼€å§‹è½¬æ¢çš„æ—¶é—´
 				break;
-  case CTemperatureing: //ÕıÔÚ½øĞĞÎÂ¶È×ª»»
-  			 	if((micros()-ConvetTime)>Time_tempC){ //ÊÇ·ñµ½´ï×ª»»Ê±¼ä£¿
+  case CTemperatureing: //æ­£åœ¨è¿›è¡Œæ¸©åº¦è½¬æ¢
+  			 	if((micros()-ConvetTime)>Time_tempC){ //æ˜¯å¦åˆ°è¾¾è½¬æ¢æ—¶é—´ï¼Ÿ
 				BMP180_calcTrueTemperature(0);
 				BMP180_getTemperature(&last_Temperature,0);
 				BMP180_newTemperature(last_Temperature);
 				BPM085_ST = SCPressure;
 				}
   				break;
-  case SCPressure:  //¿ªÊ¼ÆøÑ¹¼Æ×ª»»
+  case SCPressure:  //å¼€å§‹æ°”å‹è®¡è½¬æ¢
   				BMP180_writemem(CONTROL, READ_PRESSURE+(_oss << 6));
 				BPM085_ST = SCPressureing;
-				ConvetTime = micros();  //¶ÁÈ¡¿ªÊ¼×ª»»µÄÊ±¼ä
+				ConvetTime = micros();  //è¯»å–å¼€å§‹è½¬æ¢çš„æ—¶é—´
   				break;
-  case SCPressureing: //ÕıÔÚ½øĞĞÆøÑ¹×ª»» 
-  				if((micros()-ConvetTime)>Time_Limit){  //ÊÇ·ñµ½´ï×ª»»Ê±¼ä£¿
+  case SCPressureing: //æ­£åœ¨è¿›è¡Œæ°”å‹è½¬æ¢ 
+  				if((micros()-ConvetTime)>Time_Limit){  //æ˜¯å¦åˆ°è¾¾è½¬æ¢æ—¶é—´ï¼Ÿ
 				BMP180_getAltitude(&last_Alt,0);
 				BMP180_newALT(last_Alt);
 				BPM085_ST = SCTemperature;
@@ -165,9 +165,9 @@ void BMP180_readmem(uint8_t _addr, uint8_t _nbytes, uint8_t __buff[]) {
   IICreadBytes(BMP180_ADDR,_addr,_nbytes,__buff);
 }
 
-/**************************ÊµÏÖº¯Êı********************************************
-*º¯ÊıÔ­ĞÍ:		void BMP180_getCalData(void)
-*¹¦¡¡¡¡ÄÜ:		¶Áµ½ BMP180 ÄÚ²¿µÄ±ê¶¨ĞÅÏ¢
+/**************************å®ç°å‡½æ•°********************************************
+*å‡½æ•°åŸå‹:		void BMP180_getCalData(void)
+*åŠŸã€€ã€€èƒ½:		è¯»åˆ° BMP180 å†…éƒ¨çš„æ ‡å®šä¿¡æ¯
 *******************************************************************************/
 void BMP180_getCalData(void) {
   BMP180_readmem(CAL_AC1, 2, _buff);
@@ -265,7 +265,7 @@ void BMP180_getPressure(int32_t *_Pa,u8 wr){
   //TruePressure;
   *_Pa = TruePressure / pow((1 - (float)_param_centimeters / 4433000), 5.255) + _Pa_Offset;
   // converting from float to int32_t truncates toward zero, 1010.999985 becomes 1010 resulting in 1 Pa error (max).  
-  // Note that BMP180 abs accuracy from 700...1100hPa and 0..+65ºC is +-100Pa (typ.)
+  // Note that BMP180 abs accuracy from 700...1100hPa and 0..+65ç¯Š is +-100Pa (typ.)
 }
 
 void BMP180_setLocalAbsAlt(int32_t _centimeters){  
@@ -276,9 +276,9 @@ void BMP180_setLocalAbsAlt(int32_t _centimeters){
   _param_datum = tmp_Pa;
 }
 
-/**************************ÊµÏÖº¯Êı********************************************
-*º¯ÊıÔ­ĞÍ:		void BMP180_ResetAlt(int32_t _centimeters)
-*¹¦¡¡¡¡ÄÜ:		½«µ±Ç°µÄÆøÑ¹Öµµ±³É ¸ß¶È²»0Ã×Ê±µÄÆøÑ¹
+/**************************å®ç°å‡½æ•°********************************************
+*å‡½æ•°åŸå‹:		void BMP180_ResetAlt(int32_t _centimeters)
+*åŠŸã€€ã€€èƒ½:		å°†å½“å‰çš„æ°”å‹å€¼å½“æˆ é«˜åº¦ä¸0ç±³æ—¶çš„æ°”å‹
 *******************************************************************************/
 void BMP180_ResetAlt(int32_t _centimeters){  
   int32_t tmp_Pa;
@@ -308,28 +308,28 @@ void BMP180_setLocalPressure(int32_t _Pa){
 void BMP_init(u8 _BMPMode, int32_t _initVal, u8 _Unitmeters){     
   BMP180_getCalData();               // initialize cal data
   BMP180_calcTrueTemperature(1);      // initialize b5
-  BMP180_setMode(_BMPMode); //ÉèÖÃ¹ı²ÉÑù
+  BMP180_setMode(_BMPMode); //è®¾ç½®è¿‡é‡‡æ ·
   _Unitmeters>0 ? BMP180_setLocalAbsAlt(_initVal) : BMP180_setLocalPressure(_initVal); 
 }
 
-/**************************ÊµÏÖº¯Êı********************************************
-*º¯ÊıÔ­ĞÍ:		void BMP180_init(void)
-*¹¦¡¡¡¡ÄÜ:		¹©Íâ²¿µ÷ÓÃµÄ³õÊ¼»¯³ÌĞò
+/**************************å®ç°å‡½æ•°********************************************
+*å‡½æ•°åŸå‹:		void BMP180_init(void)
+*åŠŸã€€ã€€èƒ½:		ä¾›å¤–éƒ¨è°ƒç”¨çš„åˆå§‹åŒ–ç¨‹åº
 *******************************************************************************/
 void BMP180_init(void) {  
   _cm_Offset = 0;
   _Pa_Offset = 0;               // 1hPa = 100Pa = 1mbar	
-   //³õÊ¼»¯ÆøÑ¹´«¸ĞÆ÷£¬
-   //MODE_ULTRA_HIGHRES  ¸ß¾«¶È²âÁ¿Ä£Ê½
+   //åˆå§‹åŒ–æ°”å‹ä¼ æ„Ÿå™¨ï¼Œ
+   //MODE_ULTRA_HIGHRES  é«˜ç²¾åº¦æµ‹é‡æ¨¡å¼
   BMP_init(MODE_ULTRA_HIGHRES, 0, 1);
 }
 
-/**************************ÊµÏÖº¯Êı********************************************
-*º¯ÊıÔ­ĞÍ:		void BMP180_getTemperature(int32_t *_Temperature,u8 rw)
-*¹¦¡¡¡¡ÄÜ:		¶ÁÈ¡ÎÂ¶ÈÖµ¡£
-ÊäÈë £º
-int32_t *_Temperature  ÎÂ¶È½á¹û´æ·ÅµÄÖ¸Õë
-u8 rw	 ÊÇ·ñĞèÒªµÈ´ı 0 Ôò²»ĞèÒªµÈ´ı¡£
+/**************************å®ç°å‡½æ•°********************************************
+*å‡½æ•°åŸå‹:		void BMP180_getTemperature(int32_t *_Temperature,u8 rw)
+*åŠŸã€€ã€€èƒ½:		è¯»å–æ¸©åº¦å€¼ã€‚
+è¾“å…¥ ï¼š
+int32_t *_Temperature  æ¸©åº¦ç»“æœå­˜æ”¾çš„æŒ‡é’ˆ
+u8 rw	 æ˜¯å¦éœ€è¦ç­‰å¾… 0 åˆ™ä¸éœ€è¦ç­‰å¾…ã€‚
 *******************************************************************************/
 void BMP180_getTemperature(int32_t *_Temperature,u8 rw) {
   BMP180_calcTrueTemperature(rw);                            // force b5 update

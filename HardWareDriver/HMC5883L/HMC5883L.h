@@ -30,10 +30,10 @@ extern unsigned char HMC5883_calib;
 extern int16_t  HMC5883_maxx,HMC5883_maxy,HMC5883_maxz,
 		 HMC5883_minx,HMC5883_miny,HMC5883_minz;
 
-void HMC5883L_SetUp(void);	//³õÊ¼»¯
-void HMC58X3_getID(char id[3]);	//¶ÁĞ¾Æ¬ID
-void HMC58X3_getValues(int16_t *x,int16_t *y,int16_t *z); //¶ÁADC
-void HMC58X3_mgetValues(float *arry); //IMU ×¨ÓÃµÄ¶ÁÈ¡´ÅÁ¦¼ÆÖµ
+void HMC5883L_SetUp(void);	//åˆå§‹åŒ–
+void HMC58X3_getID(char id[3]);	//è¯»èŠ¯ç‰‡ID
+void HMC58X3_getValues(int16_t *x,int16_t *y,int16_t *z); //è¯»ADC
+void HMC58X3_mgetValues(float *arry); //IMU ä¸“ç”¨çš„è¯»å–ç£åŠ›è®¡å€¼
 void HMC58X3_getlastValues(int16_t *x,int16_t *y,int16_t *z);
 void HMC5883L_Start_Calib(void);
 void HMC5883L_Save_Calib(void);

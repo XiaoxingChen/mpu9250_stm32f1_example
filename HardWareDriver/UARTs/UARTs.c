@@ -1,15 +1,15 @@
 /* UARTs.C file
-STM32-SDK ¿ª·¢°åÏà¹ØÀý³Ì
-±àÐ´Õß£ºlisn3188
-ÍøÖ·£ºwww.chiplab7.com
-×÷ÕßE-mail£ºlisn3188@163.com
-±àÒë»·¾³£ºMDK-Lite  Version: 4.23
-³õ°æÊ±¼ä: 2012-02-28
-²âÊÔ£º ±¾³ÌÐòÒÑÔÚµÚÆßÊµÑéÊÒµÄSTM32-SDKÉÏÍê³É²âÊÔ
-¹¦ÄÜ£ºÊµÏÖ	STM32-SDK ¿ª·¢°åÉÏµÄ UART1-RS232 ½Ó¿Ú²Ù×÷
+STM32-SDK å¼€å‘æ¿ç›¸å…³ä¾‹ç¨‹
+ç¼–å†™è€…ï¼šlisn3188
+ç½‘å€ï¼šwww.chiplab7.com
+ä½œè€…E-mailï¼šlisn3188@163.com
+ç¼–è¯‘çŽ¯å¢ƒï¼šMDK-Lite  Version: 4.23
+åˆç‰ˆæ—¶é—´: 2012-02-28
+æµ‹è¯•ï¼š æœ¬ç¨‹åºå·²åœ¨ç¬¬ä¸ƒå®žéªŒå®¤çš„STM32-SDKä¸Šå®Œæˆæµ‹è¯•
+åŠŸèƒ½ï¼šå®žçŽ°	STM32-SDK å¼€å‘æ¿ä¸Šçš„ UART1-RS232 æŽ¥å£æ“ä½œ
 
----------Ó²¼þÉÏµÄÒý½ÅÁ¬½Ó:----------
-RS232½Ó¿Ú£º
+---------ç¡¬ä»¶ä¸Šçš„å¼•è„šè¿žæŽ¥:----------
+RS232æŽ¥å£ï¼š
 RS232TXD  -->  PA9  (UART1-TXD)
 RS232RXD  -->  PA10 (UART1-RXD)
 ------------------------------------
@@ -32,44 +32,44 @@ void NVIC_Configuration(void)
         NVIC_Init(&NVIC_InitStructure);
 }
 
-/**************************ÊµÏÖº¯Êý********************************************
-*º¯ÊýÔ­ÐÍ:		void Initial_UART1(u32 baudrate)
-*¹¦¡¡¡¡ÄÜ:		³õÊ¼»¯STM32-SDK¿ª·¢°åÉÏµÄRS232½Ó¿Ú
-ÊäÈë²ÎÊý£º
-		u32 baudrate   ÉèÖÃRS232´®¿ÚµÄ²¨ÌØÂÊ
-Êä³ö²ÎÊý£ºÃ»ÓÐ	
+/**************************å®žçŽ°å‡½æ•°********************************************
+*å‡½æ•°åŽŸåž‹:		void Initial_UART1(u32 baudrate)
+*åŠŸã€€ã€€èƒ½:		åˆå§‹åŒ–STM32-SDKå¼€å‘æ¿ä¸Šçš„RS232æŽ¥å£
+è¾“å…¥å‚æ•°ï¼š
+		u32 baudrate   è®¾ç½®RS232ä¸²å£çš„æ³¢ç‰¹çŽ‡
+è¾“å‡ºå‚æ•°ï¼šæ²¡æœ‰	
 *******************************************************************************/
 void Initial_UART1(u32 baudrate)
 {
  	GPIO_InitTypeDef GPIO_InitStructure;
 	USART_InitTypeDef USART_InitStructure;
 
-	/* Ê¹ÄÜ UART1 Ä£¿éµÄÊ±ÖÓ  Ê¹ÄÜ UART1¶ÔÓ¦µÄÒý½Å¶Ë¿ÚPAµÄÊ±ÖÓ*/
+	/* ä½¿èƒ½ UART1 æ¨¡å—çš„æ—¶é’Ÿ  ä½¿èƒ½ UART1å¯¹åº”çš„å¼•è„šç«¯å£PAçš„æ—¶é’Ÿ*/
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOA, ENABLE);
 
-  	 /* ÅäÖÃUART1 µÄ·¢ËÍÒý½Å
-	 ÅäÖÃPA9 Îª¸´ÓÃÊä³ö  Ë¢ÐÂÆµÂÊ50MHz
+  	 /* é…ç½®UART1 çš„å‘é€å¼•è„š
+	 é…ç½®PA9 ä¸ºå¤ç”¨è¾“å‡º  åˆ·æ–°é¢‘çŽ‡50MHz
 	  */
   	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
  	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
   	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   	GPIO_Init(GPIOA, &GPIO_InitStructure);    
   	/* 
-	  ÅäÖÃUART1 µÄ½ÓÊÕÒý½Å
-	  ÅäÖÃPA10Îª¸¡µØÊäÈë 
+	  é…ç½®UART1 çš„æŽ¥æ”¶å¼•è„š
+	  é…ç½®PA10ä¸ºæµ®åœ°è¾“å…¥ 
 	 */
   	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
   	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
   	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	  
 	/* 
-	  UART1µÄÅäÖÃ:
-	  1.²¨ÌØÂÊÎªµ÷ÓÃ³ÌÐòÖ¸¶¨µÄÊäÈë baudrate;
-	  2. 8Î»Êý¾Ý			  USART_WordLength_8b;
-	  3.Ò»¸öÍ£Ö¹Î»			  USART_StopBits_1;
-	  4. ÎÞÆæÅ¼Ð§Ñé			  USART_Parity_No ;
-	  5.²»Ê¹ÓÃÓ²¼þÁ÷¿ØÖÆ	  USART_HardwareFlowControl_None;
-	  6.Ê¹ÄÜ·¢ËÍºÍ½ÓÊÕ¹¦ÄÜ	  USART_Mode_Rx | USART_Mode_Tx;
+	  UART1çš„é…ç½®:
+	  1.æ³¢ç‰¹çŽ‡ä¸ºè°ƒç”¨ç¨‹åºæŒ‡å®šçš„è¾“å…¥ baudrate;
+	  2. 8ä½æ•°æ®			  USART_WordLength_8b;
+	  3.ä¸€ä¸ªåœæ­¢ä½			  USART_StopBits_1;
+	  4. æ— å¥‡å¶æ•ˆéªŒ			  USART_Parity_No ;
+	  5.ä¸ä½¿ç”¨ç¡¬ä»¶æµæŽ§åˆ¶	  USART_HardwareFlowControl_None;
+	  6.ä½¿èƒ½å‘é€å’ŒæŽ¥æ”¶åŠŸèƒ½	  USART_Mode_Rx | USART_Mode_Tx;
 	 */
 	USART_InitStructure.USART_BaudRate = baudrate;
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
@@ -77,38 +77,38 @@ void Initial_UART1(u32 baudrate)
 	USART_InitStructure.USART_Parity = USART_Parity_No ;
 	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
 	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-	//Ó¦ÓÃÅäÖÃµ½UART1
+	//åº”ç”¨é…ç½®åˆ°UART1
 	USART_Init(USART1, &USART_InitStructure); 
 	USART_ITConfig(USART1, USART_IT_TXE, DISABLE);        
     USART_ClearFlag(USART1,USART_FLAG_TC);
-	//Æô¶¯UART1
+	//å¯åŠ¨UART1
   	USART_Cmd(USART1, ENABLE);
 	NVIC_Configuration();
 }
 
-/**************************ÊµÏÖº¯Êý********************************************
-*º¯ÊýÔ­ÐÍ:		void UART1_Put_Char(unsigned char DataToSend)
-*¹¦¡¡¡¡ÄÜ:		RS232·¢ËÍÒ»¸ö×Ö½Ú
-ÊäÈë²ÎÊý£º
-		unsigned char DataToSend   Òª·¢ËÍµÄ×Ö½ÚÊý¾Ý
-Êä³ö²ÎÊý£ºÃ»ÓÐ	
+/**************************å®žçŽ°å‡½æ•°********************************************
+*å‡½æ•°åŽŸåž‹:		void UART1_Put_Char(unsigned char DataToSend)
+*åŠŸã€€ã€€èƒ½:		RS232å‘é€ä¸€ä¸ªå­—èŠ‚
+è¾“å…¥å‚æ•°ï¼š
+		unsigned char DataToSend   è¦å‘é€çš„å­—èŠ‚æ•°æ®
+è¾“å‡ºå‚æ•°ï¼šæ²¡æœ‰	
 *******************************************************************************/
 void UART1_Put_Char(unsigned char DataToSend)
 {
-	//½«Òª·¢ËÍµÄ×Ö½ÚÐ´µ½UART1µÄ·¢ËÍ»º³åÇø
+	//å°†è¦å‘é€çš„å­—èŠ‚å†™åˆ°UART1çš„å‘é€ç¼“å†²åŒº
 	//USART_SendData(USART1, (unsigned char) DataToSend);
-	//µÈ´ý·¢ËÍÍê³É
+	//ç­‰å¾…å‘é€å®Œæˆ
   	//while (!(USART1->SR & USART_FLAG_TXE));
 
 	TxBuffer[count++] = DataToSend;  
     USART_ITConfig(USART1, USART_IT_TXE, ENABLE);  
 }
 
-/**************************ÊµÏÖº¯Êý********************************************
-*º¯ÊýÔ­ÐÍ:		u8 UART1_Get_Char(void)
-*¹¦¡¡¡¡ÄÜ:		RS232½ÓÊÕÒ»¸ö×Ö½Ú  Ò»Ö±µÈ´ý£¬Ö±µ½UART1½ÓÊÕµ½Ò»¸ö×Ö½ÚµÄÊý¾Ý¡£
-ÊäÈë²ÎÊý£º		 Ã»ÓÐ
-Êä³ö²ÎÊý£º       UART1½ÓÊÕµ½µÄÊý¾Ý	
+/**************************å®žçŽ°å‡½æ•°********************************************
+*å‡½æ•°åŽŸåž‹:		u8 UART1_Get_Char(void)
+*åŠŸã€€ã€€èƒ½:		RS232æŽ¥æ”¶ä¸€ä¸ªå­—èŠ‚  ä¸€ç›´ç­‰å¾…ï¼Œç›´åˆ°UART1æŽ¥æ”¶åˆ°ä¸€ä¸ªå­—èŠ‚çš„æ•°æ®ã€‚
+è¾“å…¥å‚æ•°ï¼š		 æ²¡æœ‰
+è¾“å‡ºå‚æ•°ï¼š       UART1æŽ¥æ”¶åˆ°çš„æ•°æ®	
 *******************************************************************************/
 u8 UART1_Get_Char(void)
 {
@@ -116,88 +116,88 @@ u8 UART1_Get_Char(void)
 	return(USART_ReceiveData(USART1));
 }
 
-/**************************ÊµÏÖº¯Êý********************************************
-*º¯ÊýÔ­ÐÍ:		void UART1_Put_String(unsigned char *Str)
-*¹¦¡¡¡¡ÄÜ:		RS232·¢ËÍ×Ö·û´®
-ÊäÈë²ÎÊý£º
-		unsigned char *Str   Òª·¢ËÍµÄ×Ö·û´®
-Êä³ö²ÎÊý£ºÃ»ÓÐ	
+/**************************å®žçŽ°å‡½æ•°********************************************
+*å‡½æ•°åŽŸåž‹:		void UART1_Put_String(unsigned char *Str)
+*åŠŸã€€ã€€èƒ½:		RS232å‘é€å­—ç¬¦ä¸²
+è¾“å…¥å‚æ•°ï¼š
+		unsigned char *Str   è¦å‘é€çš„å­—ç¬¦ä¸²
+è¾“å‡ºå‚æ•°ï¼šæ²¡æœ‰	
 *******************************************************************************/
 void UART1_Put_String(unsigned char *Str)
 {
-	//ÅÐ¶ÏStrÖ¸ÏòµÄÊý¾ÝÊÇ·ñÓÐÐ§.
+	//åˆ¤æ–­StræŒ‡å‘çš„æ•°æ®æ˜¯å¦æœ‰æ•ˆ.
 	while(*Str){
-	//ÊÇ·ñÊÇ»Ø³µ×Ö·û Èç¹ûÊÇ,Ôò·¢ËÍÏàÓ¦µÄ»Ø³µ 0x0d 0x0a
+	//æ˜¯å¦æ˜¯å›žè½¦å­—ç¬¦ å¦‚æžœæ˜¯,åˆ™å‘é€ç›¸åº”çš„å›žè½¦ 0x0d 0x0a
 	if(*Str=='\r')UART1_Put_Char(0x0d);
 		else if(*Str=='\n')UART1_Put_Char(0x0a);
 			else UART1_Put_Char(*Str);
-	//µÈ´ý·¢ËÍÍê³É.
+	//ç­‰å¾…å‘é€å®Œæˆ.
   	//while (!(USART1->SR & USART_FLAG_TXE));
-	//Ö¸Õë++ Ö¸ÏòÏÂÒ»¸ö×Ö½Ú.
+	//æŒ‡é’ˆ++ æŒ‡å‘ä¸‹ä¸€ä¸ªå­—èŠ‚.
 	Str++;
 	}
 /*
-	//ÅÐ¶ÏStrÖ¸ÏòµÄÊý¾ÝÊÇ·ñÓÐÐ§.
+	//åˆ¤æ–­StræŒ‡å‘çš„æ•°æ®æ˜¯å¦æœ‰æ•ˆ.
 	while(*Str){
-	//ÊÇ·ñÊÇ»Ø³µ×Ö·û Èç¹ûÊÇ,Ôò·¢ËÍÏàÓ¦µÄ»Ø³µ 0x0d 0x0a
+	//æ˜¯å¦æ˜¯å›žè½¦å­—ç¬¦ å¦‚æžœæ˜¯,åˆ™å‘é€ç›¸åº”çš„å›žè½¦ 0x0d 0x0a
 	if(*Str=='\r')USART_SendData(USART1, 0x0d);
 		else if(*Str=='\n')USART_SendData(USART1, 0x0a);
 			else USART_SendData(USART1, *Str);
-	//µÈ´ý·¢ËÍÍê³É.
+	//ç­‰å¾…å‘é€å®Œæˆ.
   	while (!(USART1->SR & USART_FLAG_TXE));
-	//Ö¸Õë++ Ö¸ÏòÏÂÒ»¸ö×Ö½Ú.
+	//æŒ‡é’ˆ++ æŒ‡å‘ä¸‹ä¸€ä¸ªå­—èŠ‚.
 	Str++;
 	}		 */
 }
 
-/**************************ÊµÏÖº¯Êý********************************************
-*º¯ÊýÔ­ÐÍ:		void UART1_Putc_Hex(uint8_t b)
-*¹¦¡¡¡¡ÄÜ:		RS232ÒÔÊ®Áù½øÖÆASCIIÂëµÄ·½Ê½·¢ËÍÒ»¸ö×Ö½ÚÊý¾Ý
-				ÏÈ½«Ä¿±ê×Ö½ÚÊý¾Ý¸ß4Î»×ª³ÉASCCII £¬·¢ËÍ£¬ÔÙ½«µÍ4Î»×ª³ÉASCII·¢ËÍ
-				Èç:0xF2 ½«·¢ËÍ " F2 "
-ÊäÈë²ÎÊý£º
-		uint8_t b   Òª·¢ËÍµÄ×Ö½Ú
-Êä³ö²ÎÊý£ºÃ»ÓÐ	
+/**************************å®žçŽ°å‡½æ•°********************************************
+*å‡½æ•°åŽŸåž‹:		void UART1_Putc_Hex(uint8_t b)
+*åŠŸã€€ã€€èƒ½:		RS232ä»¥åå…­è¿›åˆ¶ASCIIç çš„æ–¹å¼å‘é€ä¸€ä¸ªå­—èŠ‚æ•°æ®
+				å…ˆå°†ç›®æ ‡å­—èŠ‚æ•°æ®é«˜4ä½è½¬æˆASCCII ï¼Œå‘é€ï¼Œå†å°†ä½Ž4ä½è½¬æˆASCIIå‘é€
+				å¦‚:0xF2 å°†å‘é€ " F2 "
+è¾“å…¥å‚æ•°ï¼š
+		uint8_t b   è¦å‘é€çš„å­—èŠ‚
+è¾“å‡ºå‚æ•°ï¼šæ²¡æœ‰	
 *******************************************************************************/
 void UART1_Putc_Hex(uint8_t b)
 {
-      /* ÅÐ¶ÏÄ¿±ê×Ö½ÚµÄ¸ß4Î»ÊÇ·ñÐ¡ÓÚ10 */
+      /* åˆ¤æ–­ç›®æ ‡å­—èŠ‚çš„é«˜4ä½æ˜¯å¦å°äºŽ10 */
     if((b >> 4) < 0x0a)
-        UART1_Put_Char((b >> 4) + '0'); //Ð¡ÓÚ10  ,ÔòÏàÓ¦·¢ËÍ0-9µÄASCII
+        UART1_Put_Char((b >> 4) + '0'); //å°äºŽ10  ,åˆ™ç›¸åº”å‘é€0-9çš„ASCII
     else
-        UART1_Put_Char((b >> 4) - 0x0a + 'A'); //´óÓÚµÈÓÚ10 ÔòÏàÓ¦·¢ËÍ A-F
+        UART1_Put_Char((b >> 4) - 0x0a + 'A'); //å¤§äºŽç­‰äºŽ10 åˆ™ç›¸åº”å‘é€ A-F
 
-    /* ÅÐ¶ÏÄ¿±ê×Ö½ÚµÄµÍ4Î» ÊÇ·ñÐ¡ÓÚ10*/
+    /* åˆ¤æ–­ç›®æ ‡å­—èŠ‚çš„ä½Ž4ä½ æ˜¯å¦å°äºŽ10*/
     if((b & 0x0f) < 0x0a)
-        UART1_Put_Char((b & 0x0f) + '0');//Ð¡ÓÚ10  ,ÔòÏàÓ¦·¢ËÍ0-9µÄASCII
+        UART1_Put_Char((b & 0x0f) + '0');//å°äºŽ10  ,åˆ™ç›¸åº”å‘é€0-9çš„ASCII
     else
-        UART1_Put_Char((b & 0x0f) - 0x0a + 'A');//´óÓÚµÈÓÚ10 ÔòÏàÓ¦·¢ËÍ A-F
-   UART1_Put_Char(' '); //·¢ËÍÒ»¸ö¿Õ¸ñ,ÒÔÇø·Ö¿ªÁ½¸ö×Ö½Ú
+        UART1_Put_Char((b & 0x0f) - 0x0a + 'A');//å¤§äºŽç­‰äºŽ10 åˆ™ç›¸åº”å‘é€ A-F
+   UART1_Put_Char(' '); //å‘é€ä¸€ä¸ªç©ºæ ¼,ä»¥åŒºåˆ†å¼€ä¸¤ä¸ªå­—èŠ‚
 }
 
-/**************************ÊµÏÖº¯Êý********************************************
-*º¯ÊýÔ­ÐÍ:		void UART1_Putw_Hex(uint16_t w)
-*¹¦¡¡¡¡ÄÜ:		RS232ÒÔÊ®Áù½øÖÆASCIIÂëµÄ·½Ê½·¢ËÍÒ»¸ö×ÖµÄÊý¾Ý.¾ÍÊÇ·¢ËÍÒ»¸öint
-				Èç:0x3456 ½«·¢ËÍ " 3456 "
-ÊäÈë²ÎÊý£º
-		uint16_t w   Òª·¢ËÍµÄ×Ö
-Êä³ö²ÎÊý£ºÃ»ÓÐ	
+/**************************å®žçŽ°å‡½æ•°********************************************
+*å‡½æ•°åŽŸåž‹:		void UART1_Putw_Hex(uint16_t w)
+*åŠŸã€€ã€€èƒ½:		RS232ä»¥åå…­è¿›åˆ¶ASCIIç çš„æ–¹å¼å‘é€ä¸€ä¸ªå­—çš„æ•°æ®.å°±æ˜¯å‘é€ä¸€ä¸ªint
+				å¦‚:0x3456 å°†å‘é€ " 3456 "
+è¾“å…¥å‚æ•°ï¼š
+		uint16_t w   è¦å‘é€çš„å­—
+è¾“å‡ºå‚æ•°ï¼šæ²¡æœ‰	
 *******************************************************************************/
 void UART1_Putw_Hex(uint16_t w)
 {
-	//·¢ËÍ¸ß8Î»Êý¾Ý,µ±³ÉÒ»¸ö×Ö½Ú·¢ËÍ
+	//å‘é€é«˜8ä½æ•°æ®,å½“æˆä¸€ä¸ªå­—èŠ‚å‘é€
     UART1_Putc_Hex((uint8_t) (w >> 8));
-	//·¢ËÍµÍ8Î»Êý¾Ý,µ±³ÉÒ»¸ö×Ö½Ú·¢ËÍ
+	//å‘é€ä½Ž8ä½æ•°æ®,å½“æˆä¸€ä¸ªå­—èŠ‚å‘é€
     UART1_Putc_Hex((uint8_t) (w & 0xff));
 }
 
-/**************************ÊµÏÖº¯Êý********************************************
-*º¯ÊýÔ­ÐÍ:		void UART1_Putdw_Hex(uint32_t dw)
-*¹¦¡¡¡¡ÄÜ:		RS232ÒÔÊ®Áù½øÖÆASCIIÂëµÄ·½Ê½·¢ËÍ32Î»µÄÊý¾Ý.
-				Èç:0xF0123456 ½«·¢ËÍ " F0123456 "
-ÊäÈë²ÎÊý£º
-		uint32_t dw   Òª·¢ËÍµÄ32Î»Êý¾ÝÖµ
-Êä³ö²ÎÊý£ºÃ»ÓÐ	
+/**************************å®žçŽ°å‡½æ•°********************************************
+*å‡½æ•°åŽŸåž‹:		void UART1_Putdw_Hex(uint32_t dw)
+*åŠŸã€€ã€€èƒ½:		RS232ä»¥åå…­è¿›åˆ¶ASCIIç çš„æ–¹å¼å‘é€32ä½çš„æ•°æ®.
+				å¦‚:0xF0123456 å°†å‘é€ " F0123456 "
+è¾“å…¥å‚æ•°ï¼š
+		uint32_t dw   è¦å‘é€çš„32ä½æ•°æ®å€¼
+è¾“å‡ºå‚æ•°ï¼šæ²¡æœ‰	
 *******************************************************************************/
 void UART1_Putdw_Hex(uint32_t dw)
 {
@@ -205,13 +205,13 @@ void UART1_Putdw_Hex(uint32_t dw)
     UART1_Putw_Hex((uint16_t) (dw & 0xffff));
 }
 
-/**************************ÊµÏÖº¯Êý********************************************
-*º¯ÊýÔ­ÐÍ:		void UART1_Putw_Dec(uint16_t w)
-*¹¦¡¡¡¡ÄÜ:		RS232ÒÔÊ®½øÖÆASCIIÂëµÄ·½Ê½·¢ËÍ16Î»µÄÊý¾Ý.
-				Èç:0x123 ½«·¢ËÍËüµÄÊ®½øÖÆÊý¾Ý " 291 "
-ÊäÈë²ÎÊý£º
-		uint16_t w   Òª·¢ËÍµÄ16Î»Êý¾ÝÖµ
-Êä³ö²ÎÊý£ºÃ»ÓÐ	
+/**************************å®žçŽ°å‡½æ•°********************************************
+*å‡½æ•°åŽŸåž‹:		void UART1_Putw_Dec(uint16_t w)
+*åŠŸã€€ã€€èƒ½:		RS232ä»¥åè¿›åˆ¶ASCIIç çš„æ–¹å¼å‘é€16ä½çš„æ•°æ®.
+				å¦‚:0x123 å°†å‘é€å®ƒçš„åè¿›åˆ¶æ•°æ® " 291 "
+è¾“å…¥å‚æ•°ï¼š
+		uint16_t w   è¦å‘é€çš„16ä½æ•°æ®å€¼
+è¾“å‡ºå‚æ•°ï¼šæ²¡æœ‰	
 *******************************************************************************/
 void UART1_Putw_Dec(uint32_t w)
 {
