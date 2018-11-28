@@ -13,8 +13,9 @@
 
 #include "IMU.h"
 
-volatile float exInt, eyInt, ezInt;  // 误差积分
-volatile float q0, q1, q2, q3; // 全局四元数
+//volatile float estimator->ex_inte, estimator->ey_inte, estimator->ez_inte;  // 误差积分
+// volatile float q0, q1, q2, q3; // 全局四元数
+// volatile OrientationEstimator estimator;
 volatile float integralFBhand,handdiff;
 volatile uint32_t lastUpdate, now; // 采样周期计数 单位 us
 
@@ -122,7 +123,7 @@ uint32_t micros(void)
 输入参数：无
 输出参数：没有
 *******************************************************************************/
-void IMU_init(void)
+void IMU_init(OrientationEstimator* estimator)
 {	 
 	MPU6050_initialize();
 	HMC5883L_SetUp();
@@ -133,13 +134,13 @@ void IMU_init(void)
 	BMP180_init();
 	Initial_Timer3();
 	// initialize quaternion
-  	q0 = 1.0f;  //初始化四元数
-  	q1 = 0.0f;
-  	q2 = 0.0f;
-  	q3 = 0.0f;
-  	exInt = 0.0;
-  	eyInt = 0.0;
-  	ezInt = 0.0;
+  	estimator->q0 = 1.0f;  //初始化四元数
+  	estimator->q1 = 0.0f;
+  	estimator->q2 = 0.0f;
+  	estimator->q3 = 0.0f;
+  	estimator->ex_inte = 0.0;
+  	estimator->ey_inte = 0.0;
+  	estimator->ez_inte = 0.0;
   	lastUpdate = micros();//更新时间
   	now = micros();
 }
@@ -177,24 +178,24 @@ void IMU_getValues(float * values) {
 #define Kp 2.0f   // proportional gain governs rate of convergence to accelerometer/magnetometer
 #define Ki 0.01f   // integral gain governs rate of convergence of gyroscope biases
 
-void IMU_AHRSupdate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz) {
+void IMU_AHRSupdate(OrientationEstimator* estimator, float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz) {
   float norm;
-  float hx, hy, hz, bx, bz;
-  float vx, vy, vz, wx, wy, wz;
+//  float hx, hy, hz, bx, bz;
+  float vx, vy, vz;// wx, wy, wz;
   float ex, ey, ez,halfT;
   float tempq0,tempq1,tempq2,tempq3;
 
   // 先把这些用得到的值算好
-  float q0q0 = q0*q0;
-  float q0q1 = q0*q1;
-  float q0q2 = q0*q2;
-  float q0q3 = q0*q3;
-  float q1q1 = q1*q1;
-  float q1q2 = q1*q2;
-  float q1q3 = q1*q3;
-  float q2q2 = q2*q2;   
-  float q2q3 = q2*q3;
-  float q3q3 = q3*q3;          
+  float q0q0 = (estimator->q0)*(estimator->q0);
+  float q0q1 = (estimator->q0)*(estimator->q1);
+  float q0q2 = (estimator->q0)*(estimator->q2);
+  float q0q3 = (estimator->q0)*(estimator->q3);
+  float q1q1 = (estimator->q1)*(estimator->q1);
+  float q1q2 = (estimator->q1)*(estimator->q2);
+  float q1q3 = (estimator->q1)*(estimator->q3);
+  float q2q2 = (estimator->q2)*(estimator->q2);   
+  float q2q3 = (estimator->q2)*(estimator->q3);
+  float q3q3 = (estimator->q3)*(estimator->q3);          
   
   now = micros();  //读取时间
   if(now<lastUpdate){ //定时器溢出过了。
@@ -252,29 +253,29 @@ axyz是测量得到的重力向量，vxyz是陀螺积分后的姿态来推算出
 这个叉积向量仍旧是位于机体坐标系上的，而陀螺积分误差也是在机体坐标系，而且叉积的大小与陀螺积分误差成正比，正好拿来纠正陀螺。（你可以自己拿东西想象一下）由于陀螺是对机体直接积分，所以对陀螺的纠正量会直接体现在对机体坐标系的纠正。
   */
 if(ex != 0.0f && ey != 0.0f && ez != 0.0f){
-  exInt = exInt + ex * Ki * halfT;
-  eyInt = eyInt + ey * Ki * halfT;	
-  ezInt = ezInt + ez * Ki * halfT;
+  estimator->ex_inte = estimator->ex_inte + ex * Ki * halfT;
+  estimator->ey_inte = estimator->ey_inte + ey * Ki * halfT;	
+  estimator->ez_inte = estimator->ez_inte + ez * Ki * halfT;
 
   // 用叉积误差来做PI修正陀螺零偏
-  gx = gx + Kp*ex + exInt;
-  gy = gy + Kp*ey + eyInt;
-  gz = gz + Kp*ez + ezInt;
+  gx = gx + Kp*ex + estimator->ex_inte;
+  gy = gy + Kp*ey + estimator->ey_inte;
+  gz = gz + Kp*ez + estimator->ez_inte;
 
   }
 
   // 四元数微分方程
-  tempq0 = q0 + (-q1*gx - q2*gy - q3*gz)*halfT;
-  tempq1 = q1 + (q0*gx + q2*gz - q3*gy)*halfT;
-  tempq2 = q2 + (q0*gy - q1*gz + q3*gx)*halfT;
-  tempq3 = q3 + (q0*gz + q1*gy - q2*gx)*halfT;  
+  tempq0 = (estimator->q0) + (-(estimator->q1)*gx - (estimator->q2)*gy - (estimator->q3)*gz)*halfT;
+  tempq1 = (estimator->q1) + ((estimator->q0)*gx + (estimator->q2)*gz - (estimator->q3)*gy)*halfT;
+  tempq2 = (estimator->q2) + ((estimator->q0)*gy - (estimator->q1)*gz + (estimator->q3)*gx)*halfT;
+  tempq3 = (estimator->q3) + ((estimator->q0)*gz + (estimator->q1)*gy - (estimator->q2)*gx)*halfT;  
   
   // 四元数规范化
   norm = invSqrt(tempq0*tempq0 + tempq1*tempq1 + tempq2*tempq2 + tempq3*tempq3);
-  q0 = tempq0 * norm;
-  q1 = tempq1 * norm;
-  q2 = tempq2 * norm;
-  q3 = tempq3 * norm;
+  (estimator->q0) = tempq0 * norm;
+  (estimator->q1) = tempq1 * norm;
+  (estimator->q2) = tempq2 * norm;
+  (estimator->q3) = tempq3 * norm;
 }
 
 /**************************实现函数********************************************
@@ -283,19 +284,27 @@ if(ex != 0.0f && ey != 0.0f && ez != 0.0f){
 输入参数： 将要存放四元数的数组首地址
 输出参数：没有
 *******************************************************************************/
-float mygetqval[9];	//用于存放传感器转换结果的数组
-void IMU_getQ(float * q) {
 
+void IMU_getQ(OrientationEstimator* estimator, float * q) {
+float mygetqval[9];	//用于存放传感器转换结果的数组
   IMU_getValues(mygetqval);	 
   //将陀螺仪的测量值转成弧度每秒
   //加速度和磁力计保持 ADC值　不需要转换
-IMU_AHRSupdate(mygetqval[3] * M_PI/180, mygetqval[4] * M_PI/180, mygetqval[5] * M_PI/180,
-   mygetqval[0], mygetqval[1], mygetqval[2], mygetqval[6], mygetqval[7], mygetqval[8]);
+IMU_AHRSupdate(estimator, 
+  mygetqval[3] * M_PI/180, 
+  mygetqval[4] * M_PI/180, 
+  mygetqval[5] * M_PI/180,
+  mygetqval[0], 
+  mygetqval[1], 
+  mygetqval[2], 
+  mygetqval[6], 
+  mygetqval[7], 
+  mygetqval[8]);
 
-  q[0] = q0; //返回当前值
-  q[1] = q1;
-  q[2] = q2;
-  q[3] = q3;
+  q[0] = estimator->q0; //返回当前值
+  q[1] = estimator->q1;
+  q[2] = estimator->q2;
+  q[3] = estimator->q3;
 }
 
 
@@ -305,10 +314,10 @@ IMU_AHRSupdate(mygetqval[3] * M_PI/180, mygetqval[4] * M_PI/180, mygetqval[5] * 
 输入参数： 将要存放姿态角的数组首地址
 输出参数：没有
 *******************************************************************************/
-void IMU_getYawPitchRoll(float * angles) {
+void IMU_getYawPitchRoll(OrientationEstimator* estimator, float * angles) {
   float q[4]; //　四元数
   volatile float gx=0.0, gy=0.0, gz=0.0; //估计重力方向
-  IMU_getQ(q); //更新全局四元数
+  IMU_getQ(estimator, q); //更新全局四元数
   
   angles[0] = -atan2(2 * q[1] * q[2] + 2 * q[0] * q[3], -2 * q[2]*q[2] - 2 * q[3] * q[3] + 1)* 180/M_PI; // yaw
   angles[1] = -asin(-2 * q[1] * q[3] + 2 * q[0] * q[2])* 180/M_PI; // pitch

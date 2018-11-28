@@ -17,15 +17,9 @@ Mini IMU AHRS 模块官方销售地址：Http://chiplab7.taobao.com
 #include "common.h"  //包含所有的驱动 头文件
 #include "upload_state_machine.h"
 
-//上传数据的状态机
-// #define REIMU  0x01 //上传解算的姿态数据
-// #define REMOV  0x02	//上传传感器的输出
-// #define REHMC  0x03	//上传磁力计的标定值
-
 #define Upload_Speed  15   //数据上传速度  单位 Hz
 #define upload_time (1000000/Upload_Speed)/2  //计算上传的时间。单位为us
 
-int16_t hmcvalue[3];
 /**************************实现函数********************************************
 *函数原型:		int main(void)
 *功　　能:		主程序
@@ -37,6 +31,7 @@ int main(void)
 	float ypr[3]; // yaw pitch roll
 	u8 state = 1;
 	uint32_t system_micrsecond;
+	OrientationEstimator estimator;
 	/* 配置系统时钟为72M 使用外部8M晶体+PLL*/      
 
 	delay_init(72);		//延时初始化
@@ -46,25 +41,25 @@ int main(void)
 	load_config();  //从flash中读取配置信息 -->eeprom.c
 	IIC_Init();	 //初始化I2C接口
 	delay_ms(300);	//等待器件上电
-	IMU_init(); //初始化IMU和传感器
+	IMU_init(&estimator); //初始化IMU和传感器
 	system_micrsecond=micros();
 	while(1){	//主循环
 		
-	IMU_getYawPitchRoll(ypr); //姿态更新
+	IMU_getYawPitchRoll(&estimator, ypr); //姿态更新
 	Math_hz++; //解算次数 ++
 
 //-------------上位机------------------------------
 	//是否到了更新 上位机的时间了？
 	if((micros()-system_micrsecond)>upload_time){
 		update_upload_state(&state, ypr, &Math_hz);
-		system_micrsecond=micros();	 //取系统时间 单位 us 
+		system_micrsecond = micros();	 //取系统时间 单位 us 
 	}
 //--------------------------------------------------
 	//处理PC发送来的命令
 	if((PC_comm=UART2_CommandRoute())!=0xff)
 	{
-	switch(PC_comm){ //检查命令标识
-	case Gyro_init:			MPU6050_InitGyro_Offset(); break; //读取陀螺仪零偏
+		switch(PC_comm){ //检查命令标识
+		case Gyro_init:			MPU6050_InitGyro_Offset(); break; //读取陀螺仪零偏
 	}
 	}// 处理PC 发送的命令
 
