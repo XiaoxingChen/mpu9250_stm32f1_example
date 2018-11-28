@@ -206,10 +206,7 @@ void MPU6050_initialize(void) {
 *******************************************************************************/
 unsigned char MPU6050_is_DRY(void)
 {
-    if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_6)==Bit_SET){
-	  return 1;
-	 }
-	 else return 0;
+    return 1;
 }
 
 int16_t MPU6050_Lastax,MPU6050_Lastay,MPU6050_Lastaz
