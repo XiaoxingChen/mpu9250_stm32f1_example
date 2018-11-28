@@ -15,22 +15,17 @@ Mini IMU AHRS 模块官方销售地址：Http://chiplab7.taobao.com
 */
 
 #include "common.h"  //包含所有的驱动 头文件
+#include "upload_state_machine.h"
 
 //上传数据的状态机
-#define REIMU  0x01 //上传解算的姿态数据
-#define REMOV  0x02	//上传传感器的输出
-#define REHMC  0x03	//上传磁力计的标定值
+// #define REIMU  0x01 //上传解算的姿态数据
+// #define REMOV  0x02	//上传传感器的输出
+// #define REHMC  0x03	//上传磁力计的标定值
 
 #define Upload_Speed  15   //数据上传速度  单位 Hz
 #define upload_time (1000000/Upload_Speed)/2  //计算上传的时间。单位为us
 
-int16_t ax, ay, az;	
-int16_t gx, gy, gz;
-int16_t hx, hy, hz;
-int32_t Temperature = 0, Pressure = 0, Altitude = 0;
-uint32_t system_micrsecond;
 int16_t hmcvalue[3];
-u8 state= REIMU;  //发送特定帧 的状态机
 /**************************实现函数********************************************
 *函数原型:		int main(void)
 *功　　能:		主程序
@@ -40,8 +35,10 @@ int main(void)
 	int16_t Math_hz=0;
 	unsigned char PC_comm; //PC 命令关键字节	 
 	float ypr[3]; // yaw pitch roll
+	u8 state = 1;
+	uint32_t system_micrsecond;
 	/* 配置系统时钟为72M 使用外部8M晶体+PLL*/      
-    //SystemInit();
+
 	delay_init(72);		//延时初始化
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);	
 	GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
@@ -55,28 +52,12 @@ int main(void)
 		
 	IMU_getYawPitchRoll(ypr); //姿态更新
 	Math_hz++; //解算次数 ++
-	BMP180_Routing(); //处理BMP018 事务 开启转换和读取结果将在这个子程序中进行 
 
 //-------------上位机------------------------------
 	//是否到了更新 上位机的时间了？
 	if((micros()-system_micrsecond)>upload_time){
-	switch(state){ 
-	case REIMU:
-	UART1_ReportIMU((int16_t)(ypr[0]*10.0),(int16_t)(ypr[1]*10.0),
-	(int16_t)(ypr[2]*10.0),Altitude/10,Temperature,Pressure/10,Math_hz*16);
-	Math_hz=0;
-	state = REMOV; //更改状态。
-	break;
-	case REMOV:
-	MPU6050_getlastMotion6(&ax, &ay, &az, &gx, &gy, &gz);
-	UART1_ReportMotion(ax,ay,az,gx,gy,gz,hx,hy,hz);
-	state = REIMU;
-	break;
-	default: 
-	state = REIMU;
-	break;
-	}//switch(state) 			 
-	system_micrsecond=micros();	 //取系统时间 单位 us 
+		update_upload_state(&state, ypr, &Math_hz);
+		system_micrsecond=micros();	 //取系统时间 单位 us 
 	}
 //--------------------------------------------------
 	//处理PC发送来的命令

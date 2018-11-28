@@ -467,6 +467,11 @@
               <FileType>1</FileType>
               <FilePath>.\User_Src\stm32f10x_it.c</FilePath>
             </File>
+            <File>
+              <FileName>upload_state_machine.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User_Src\upload_state_machine.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
