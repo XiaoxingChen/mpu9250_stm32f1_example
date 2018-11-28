@@ -45,19 +45,14 @@ int main(void)
 	delay_init(72);		//延时初始化
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);	
 	GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
-    Initial_LED_GPIO();	//初始化STM32-SDK板子上的LED接口
-	Initial_PWMLED();
 	Initial_UART1(115200L);
-	Initial_UART2(115200L);
 	load_config();  //从flash中读取配置信息 -->eeprom.c
 	IIC_Init();	 //初始化I2C接口
 	delay_ms(300);	//等待器件上电
-	//UART1_Put_String("Initialize...\r\n");
 	IMU_init(); //初始化IMU和传感器
 	system_micrsecond=micros();
 	while(1){	//主循环
 		
-	//delay_ms(1); //延时，不要算那么快。
 	IMU_getYawPitchRoll(ypr); //姿态更新
 	Math_hz++; //解算次数 ++
 	BMP180_Routing(); //处理BMP018 事务 开启转换和读取结果将在这个子程序中进行 
@@ -67,32 +62,21 @@ int main(void)
 	if((micros()-system_micrsecond)>upload_time){
 	switch(state){ 
 	case REIMU:
-	BMP180_getTemperat(&Temperature); //读取最近的温度值
-	BMP180_getPress(&Pressure);	   //读取最近的气压测量值
-	BMP180_getAlt(&Altitude);	   //读取相对高度
 	UART1_ReportIMU((int16_t)(ypr[0]*10.0),(int16_t)(ypr[1]*10.0),
 	(int16_t)(ypr[2]*10.0),Altitude/10,Temperature,Pressure/10,Math_hz*16);
-	UART2_ReportIMU((int16_t)(ypr[0]*10.0),(int16_t)(ypr[1]*10.0),
-	(int16_t)(ypr[2]*10.0),Altitude/10,Temperature,Pressure/10,Math_hz*Upload_Speed);
 	Math_hz=0;
 	state = REMOV; //更改状态。
 	break;
 	case REMOV:
 	MPU6050_getlastMotion6(&ax, &ay, &az, &gx, &gy, &gz);
-	HMC58X3_getlastValues(&hx,&hy,&hz);
 	UART1_ReportMotion(ax,ay,az,gx,gy,gz,hx,hy,hz);
-	UART2_ReportMotion(ax,ay,az,gx,gy,gz,hx,hy,hz);
 	state = REIMU;
-	if(HMC5883_calib)state = REHMC; //需要发送当前磁力计标定值
 	break;
 	default: 
-	UART2_ReportHMC(HMC5883_maxx,HMC5883_maxy,HMC5883_maxz,
-		 HMC5883_minx,HMC5883_miny,HMC5883_minz,0);//发送标定值
 	state = REIMU;
 	break;
 	}//switch(state) 			 
 	system_micrsecond=micros();	 //取系统时间 单位 us 
-	LED_Change();	//LED1改变亮度
 	}
 //--------------------------------------------------
 	//处理PC发送来的命令
@@ -100,9 +84,6 @@ int main(void)
 	{
 	switch(PC_comm){ //检查命令标识
 	case Gyro_init:			MPU6050_InitGyro_Offset(); break; //读取陀螺仪零偏
-	case High_init:			BMP180_ResetAlt(0); 	break;		//气压高度 清零
-	case HMC_calib_begin:	HMC5883L_Start_Calib();	break; //开始磁力计标定
-	case HMC_calib:		HMC5883L_Save_Calib();	break;   //保存磁力计标定
 	}
 	}// 处理PC 发送的命令
 
