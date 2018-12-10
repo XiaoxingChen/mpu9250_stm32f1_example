@@ -136,8 +136,10 @@ void PendSV_Handler(void)
   * @param  None
   * @retval None
   */
+#include "base_timer.h"
 void SysTick_Handler(void)
 {
+	base_timer_isr();
 }
 
 /******************************************************************************/

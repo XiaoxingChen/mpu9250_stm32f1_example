@@ -46,7 +46,7 @@ void base_timer_delay_us(uint16_t value)
 {
 	uint32_t in_tick = SysTick->VAL;
 	uint32_t in_base_count = _base_counter;
-	uint32_t count_num = value * us_count;
+	uint32_t count_num = (value-1) * us_count;
 	uint32_t target_tick;
 	if(in_tick > count_num)
 	{
