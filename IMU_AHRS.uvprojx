@@ -403,11 +403,6 @@
           <GroupName>HardWareDriver</GroupName>
           <Files>
             <File>
-              <FileName>delay.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\HardWareDriver\delay.c</FilePath>
-            </File>
-            <File>
               <FileName>IOI2C.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\HardWareDriver\IOI2C.c</FilePath>
@@ -451,6 +446,16 @@
               <FileName>eeprom.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\HardWareDriver\EEPROM\eeprom.c</FilePath>
+            </File>
+            <File>
+              <FileName>base_timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HardWareDriver\base_timer.c</FilePath>
+            </File>
+            <File>
+              <FileName>systick_delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\HardWareDriver\systick_delay.c</FilePath>
             </File>
           </Files>
         </Group>
