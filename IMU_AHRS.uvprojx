@@ -453,9 +453,9 @@
               <FilePath>.\HardWareDriver\base_timer.c</FilePath>
             </File>
             <File>
-              <FileName>systick_wrapper.c</FileName>
+              <FileName>base_timer_wrapper.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\HardWareDriver\systick_wrapper.c</FilePath>
+              <FilePath>.\HardWareDriver\base_timer_wrapper.c</FilePath>
             </File>
           </Files>
         </Group>
