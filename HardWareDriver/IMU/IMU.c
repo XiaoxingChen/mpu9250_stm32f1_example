@@ -104,6 +104,7 @@ float invSqrt(float x) {
 输入参数：无
 输出参数：处理器当前时间，从上电开始计时  单位 us
 *******************************************************************************/
+#if 0
 uint32_t micros(void)
 {
  	uint32_t temp=0 ;
@@ -112,6 +113,7 @@ uint32_t micros(void)
  	temp += TIM3->CNT; //读低16位时间
  	return temp;
 }
+#endif
 
 /**************************实现函数********************************************
 *函数原型:	   void IMU_init(void)
@@ -132,7 +134,7 @@ void IMU_init(OrientationEstimator* estimator)
 	MPU6050_initialize();
 	HMC5883L_SetUp();
 	BMP180_init();
-	Initial_Timer3();
+//	Initial_Timer3();
 	// initialize quaternion
   	estimator->q0 = 1.0f;  //初始化四元数
   	estimator->q1 = 0.0f;

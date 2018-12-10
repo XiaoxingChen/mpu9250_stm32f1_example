@@ -42,6 +42,13 @@ void base_timer_delay_ms(uint16_t value)
 	while(_base_counter - in_time < value);
 }
 
+uint32_t base_timer_get_us(void)
+{
+	uint32_t in_tick = SysTick->VAL;
+	uint32_t micros =  (reload_value - in_tick) / us_count;
+	return micros;
+}
+
 void base_timer_delay_us(uint16_t value)
 {
 	uint32_t in_tick = SysTick->VAL;
