@@ -23,7 +23,13 @@ void IIC_Init(void)
  	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);			     
  	//配置PB6 PB7 为开漏输出  刷新频率为10Mhz
 // 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;	
+#ifdef HARDWARE_1V6
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;	
+#elif HARDWARE_1V7
+		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6;	
+#else
+	#error "no hardware version defined"
+#endif
   	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;       
   	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   	//应用配置到GPIOB 

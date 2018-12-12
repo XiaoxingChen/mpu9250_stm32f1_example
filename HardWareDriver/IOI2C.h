@@ -33,13 +33,25 @@
 //IO方向设置
 //#define SDA_IN()  {GPIOB->CRL&=0X0FFFFFFF;GPIOB->CRL|=0x80000000;}
 //#define SDA_OUT() {GPIOB->CRL&=0X0FFFFFFF;GPIOB->CRL|=0x30000000;}
-#define SDA_IN()  {GPIO_InitTypeDef GPIO_InitStructure;GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING; GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; GPIO_Init(GPIOB, &GPIO_InitStructure);}
-#define SDA_OUT() {GPIO_InitTypeDef GPIO_InitStructure;GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD; GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; GPIO_Init(GPIOB, &GPIO_InitStructure);}
 
-//IO操作函数	 
+////IO操作函数	 
+#ifdef HARDWARE_1V6
 #define IIC_SCL    PBout(4) //SCL
 #define IIC_SDA    PBout(5) //SDA	 
 #define READ_SDA   PBin(5)  //输入SDA 
+#define SDA_IN()  {GPIO_InitTypeDef GPIO_InitStructure;GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING; GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; GPIO_Init(GPIOB, &GPIO_InitStructure);}
+#define SDA_OUT() {GPIO_InitTypeDef GPIO_InitStructure;GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD; GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; GPIO_Init(GPIOB, &GPIO_InitStructure);}
+#elif HARDWARE_1V7
+
+//IO操作函数	 
+#define IIC_SCL    PBout(5) //SCL
+#define IIC_SDA    PBout(6) //SDA	 
+#define READ_SDA   PBin(6)  //输入SDA 
+#define SDA_IN()  {GPIO_InitTypeDef GPIO_InitStructure;GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING; GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; GPIO_Init(GPIOB, &GPIO_InitStructure);}
+#define SDA_OUT() {GPIO_InitTypeDef GPIO_InitStructure;GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD; GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; GPIO_Init(GPIOB, &GPIO_InitStructure);}
+#else
+#error "no hardware version defined"
+#endif
 
 //IIC所有操作函数
 void IIC_Init(void);                //初始化IIC的IO口				 

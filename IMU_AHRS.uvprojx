@@ -336,7 +336,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>USE_STDPERIPH_DRIVER, STM32F10X_MD</Define>
+              <Define>USE_STDPERIPH_DRIVER, STM32F10X_MD,HARDWARE_1V7</Define>
               <Undefine></Undefine>
               <IncludePath>.\StartUp;.\User_Src;.\Lib\inc;.\HardWareDriver;.\HardWareDriver\BMP180;.\HardWareDriver\HMC5883L;.\HardWareDriver\IMU;.\HardWareDriver\LED;.\HardWareDriver\MPU6050;.\HardWareDriver\UART2;.\HardWareDriver\UARTs;.\HardWareDriver\EEPROM;.\HardWareDriver\BMP085;.\HardWareDriver\EEPROM</IncludePath>
             </VariousControls>
